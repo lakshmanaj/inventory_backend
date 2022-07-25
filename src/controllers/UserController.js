@@ -91,7 +91,7 @@ export async function configureToken(req, res, next) {
 
       const token2 = jwt.sign(
         {
-          user_id: decodedToken.user_id,
+          userid: decodedToken.userid,
           email: decodedToken.email,
           usertype: decodedToken.usertype,
           username: decodedToken.username,
@@ -121,7 +121,7 @@ export async function configureToken(req, res, next) {
       var result = bcrypt.compareSync(req.body.password, user.password);
       if (result) {
         const token = jwt.sign(
-          { user_id: user._id, email: user.email, usertype: user.usertype, username: user.username },
+          { userid: user._id, email: user.email, usertype: user.usertype, username: user.username },
           process.env.TOKEN_KEY,
           {
             expiresIn: "2h",
@@ -135,33 +135,6 @@ export async function configureToken(req, res, next) {
     }
 
 
-    // if (exist.length == 0) {
-    //   const createData = await User.create({
-    //     username: data.username,
-    //     password: bcrypt.hashSync(data.password, 10),
-    //     email: data.email,
-    //     phone: data.phone,
-    //     address: data.address,
-    //     branchid: '',
-    //     usertype: "O"
-    //   });
-
-    //   res.status(201).json({
-    //     status: "success",
-    //     message: "User Created Successfuly",
-    //     data: {
-    //       createData,
-    //     },
-    //   });
-    // } else {
-    //   res.status(201).json({
-    //     status: "success",
-    //     message: "User Already Exist",
-    //     data: {
-    //       exist,
-    //     },
-    //   });
-    // }
   } catch (error) {
     console.log(error)
     next(error);

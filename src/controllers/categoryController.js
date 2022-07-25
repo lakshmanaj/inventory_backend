@@ -46,7 +46,7 @@ export async function addCategory(req, res, next) {
                             tokendata(token).then(ret => {
 
                                 Category.updateOne(
-                                    { "_id": ret.user_id },
+                                    { "_id": ret.userid },
                                     { $push: { branchid: [newBranchid] } },
                                     function (err, result) {
                                         if (err) {
@@ -133,7 +133,7 @@ export async function postLogin(req, res, next) {
             if (result) {
 
                 const token = jwt.sign(
-                    { user_id: user._id, email: user.email, usertype: user.usertype, username: user.username },
+                    { userid: user._id, email: user.email, usertype: user.usertype, username: user.username },
                     // process.env.TOKEN_KEY,
                     "34354",
                     {
@@ -147,74 +147,11 @@ export async function postLogin(req, res, next) {
             }
         }
 
-
-        // if (exist.length == 0) {
-        //   const createData = await Category.create({
-        //     username: data.username,
-        //     password: bcrypt.hashSync(data.password, 10),
-        //     email: data.email,
-        //     phone: data.phone,
-        //     address: data.address,
-        //     branchid: '',
-        //     usertype: "O"
-        //   });
-
-        //   res.status(201).json({
-        //     status: "success",
-        //     message: "Category Created Successfuly",
-        //     data: {
-        //       createData,
-        //     },
-        //   });
-        // } else {
-        //   res.status(201).json({
-        //     status: "success",
-        //     message: "Category Already Exist",
-        //     data: {
-        //       exist,
-        //     },
-        //   });
-        // }
     } catch (error) {
         console.log(error)
         next(error);
     }
 }
-
-// export async function postLogin(req, res, next) {
-//   try {
-//       console.log("trig.................",data)
-//       Category.findOne({ 'email': req.body.email }, function (err, user) {
-//           if (!user) {
-//               return res.status(422).send({ message: "Email does not exist" });
-//           }
-//           if (user) {
-//               if (user.isActive == "false")
-//                   return res.status(422).send({ message: "We are precessing your data..." });
-//               if (user.isBlocked == "true")
-//                   return res.status(422).send({ message: "Sorry.. we are not processing your data, please contact your admin..." });
-//               var result = bcrypt.compareSync(req.body.password, user.password);
-//               if (result) {
-
-//                   const token = jwt.sign(
-//                       { user_id: user._id, email: user.email, usertype: user.usertype, username: user.username },
-//                       process.env.TOKEN_KEY,
-//                       {
-//                           expiresIn: "2h",
-//                       }
-//                   );
-
-//                   return res.json({ token: token });
-//               } else {
-//                   return res.status(422).send({ message: "The password is invalid" });
-//               }
-//           }
-
-//       });
-//   } catch (error) {
-//       res.status(500).send(error);
-//   }
-// }
 
 export async function updateRecharge(req, res, next) {
     try {
