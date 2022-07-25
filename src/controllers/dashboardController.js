@@ -3,6 +3,7 @@ import User from "../models/userModel.js";
 import { getAll, getOne, deleteOne } from "./BaseController.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken"
+import mongoose from "mongoose";
 import { tokendata } from '../utils/tokenKey.js'
 
 
@@ -13,6 +14,7 @@ export async function shopListCard(req, res, next) {
         const token =
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(ret => {
+            console.log("_id", ret.user_id)
             User.aggregate([
                 {
                     $match: {
@@ -27,12 +29,16 @@ export async function shopListCard(req, res, next) {
                         as: "branch_info",
                     },
                 },
-                { 
+                {
                     $unwind: "$branch_info",
                 },
+                
+
+
+
             ])
                 .then((result) => {
-                    console.log("result",result)
+                    console.log("result", result)
                     res.status(201).json({
                         status: "success",
                         result

@@ -7,17 +7,33 @@ import { tokendata } from '../utils/tokenKey.js'
 
 export async function addShop(req, res, next) {
     try {
+
+        var returnTokenData;
+        const token =
+            req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
+        tokendata(token).then(ret => {
+            returnTokenData = ret;
+
+        })
         var postData = req.body;
         var newShopid = "";
-        var shopCreated;
+        var createShop;
         var countDoc = await Shop.countDocuments({}).exec();
         if (countDoc == 0) {
-            shopCreated = await Shop.create({
+            createShop = new Shop({
                 name: postData.name,
                 address: postData.address,
-                userid: postData.userid,
+                userid: returnTokenData.user_id,
                 shopid: "BRANCH001"
-            });
+            })
+            createShop.save((err, result) => {
+                if (!err) {
+                    res.status(201).json({
+                        status: "success",
+                        message: "Shop created successfuly",
+                    });
+                }
+            })
         }
         if (countDoc > 0) {
             newShopid = "BRANCH00" + countDoc;
@@ -33,31 +49,28 @@ export async function addShop(req, res, next) {
                     Shop.create({
                         name: postData.name,
                         address: postData.address,
-                        userid: postData.userid,
+                        userid: returnTokenData.user_id,
                         shopid: newShopid
                     }, function (err, suc) {
                         if (!err) {
 
-                            const token =
-                                req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
-                            tokendata(token).then(ret => {
 
-                                User.updateOne(
-                                    { "_id": ret.user_id },
-                                    { $push: { shopid: [newShopid] } },
-                                    function (err, result) {
-                                        if (err) {
-                                            res.send(err);
-                                        } else {
-                                            res.status(201).json({
-                                                status: "success",
-                                                message: "Shop created successfuly",
-                                            });
-                                        }
+                            User.updateOne(
+                                { "_id": returnTokenData.user_id },
+                                { $push: { shopid: [newShopid] } },
+                                function (err, result) {
+                                    if (err) {
+                                        res.send(err);
+                                    } else {
+                                        console.log("ddddd")
+                                        res.status(201).json({
+                                            status: "success",
+                                            message: "Shop created successfuly",
+                                        });
                                     }
-                                );
-                                
-                            })
+                                }
+                            );
+
 
 
                         }

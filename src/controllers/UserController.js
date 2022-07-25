@@ -9,7 +9,6 @@ import { tokendata } from '../utils/tokenKey.js'
 export async function postFirstUserRegister(req, res, next) {
   try {
     const data = req.body;
-    console.log(".........", data)
     const exist = await User.find({ email: data.email });
 
     if (exist.length == 0) {
@@ -31,12 +30,9 @@ export async function postFirstUserRegister(req, res, next) {
         },
       });
     } else {
-      res.status(201).json({
-        status: "success",
+      res.status(422).json({
+        status: "Error",
         message: "User Already Exist",
-        data: {
-          exist,
-        },
       });
     }
   } catch (error) {
