@@ -12,16 +12,16 @@ router.post("/auth/login", postLogin);
 router.post("/auth/configure/token", configureToken);
 
 import {
-    addShop,// getAllUser,// getUser,// updateUser,// deleteUser,  // sendOtp, findNearbyUser
-} from "../controllers/shopController.js";
-router.post("/shop/add", addShop);
+    addBranch,// getAllUser,// getUser,// updateUser,// deleteUser,  // sendOtp, findNearbyUser
+} from "../controllers/branchController.js";
+router.post("/branch/add", addBranch);
 
 
 import {
-    shopListCard
+    branchListCard
 } from "../controllers/dashboardController.js";
 
-router.get("/dashboard/shoplist/card", verifyToken, shopListCard)
+router.get("/dashboard/branchlist/card", verifyToken, branchListCard)
 
 
 

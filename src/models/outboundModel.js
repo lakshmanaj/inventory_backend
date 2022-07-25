@@ -5,7 +5,7 @@ const outboundSchema = new Schema({
     productid: {
         type: String,
     },
-    shopid: {
+    branchid: {
         type: String,
     },
     date: {

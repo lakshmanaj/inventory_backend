@@ -17,7 +17,7 @@ const godownSchema = new Schema({
     updated_at: {
         type: Date,
     },
-    shopid: {
+    branchid: {
         type: String,
     },
 

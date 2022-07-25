@@ -18,9 +18,9 @@ const userSchema = new Schema({
         type: String,
         required: [false, "Required mobile number"],
     },
-    shopid: {
+    branchid: {
         type: Array,
-        required: [false, "Required shop id"],
+        required: [false, "Required branch id"],
     },
     usertype: {
         type: String,
@@ -50,10 +50,19 @@ const userSchema = new Schema({
         type: Boolean, default: false,
         required: [false, "Required isActive"],
     },
-    is_blocked: {
+    is_validated: {
         type: Boolean, default: false,
-        required: [false, "Required isActive"],
+        required: [false, "Required isValidated"],
+    },
+    reference: {
+        type: String,
+        required: [false, "Required reference"],
+    },
+    paidamount: {
+        type: Number,
+        required: [false, "Required amount"],
     }
+
 });
 
 userSchema.method("toJSON", function () {

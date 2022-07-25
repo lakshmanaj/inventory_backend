@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
 const { Schema, model } = mongoose;
 
-const shopSchema = new Schema({
+const branchSchema = new Schema({
     name: {
         type: String,
     },
     address: {
         type: String,
     },
-    shopid: {
+    branchid: {
         type: String,
     },
     userid: {
@@ -28,14 +28,14 @@ const shopSchema = new Schema({
     },
 });
 
-shopSchema.method("toJSON", function () {
+branchSchema.method("toJSON", function () {
     const { __v, _id, ...object } = this.toObject();
     object.id = _id;
     return object;
 });
 
-shopSchema.set("autoIndex", true);
+branchSchema.set("autoIndex", true);
 
-const shop = model("shop", shopSchema);
+const branch = model("branches", branchSchema);
 
-export default shop;
+export default branch;

@@ -1,4 +1,4 @@
-import Shop from "../models/shopModel.js";
+import Branch from "../models/branchModel.js";
 import User from "../models/userModel.js";
 import Category from "../models/categoryModel.js";
 
@@ -11,33 +11,33 @@ export async function addCategory(req, res, next) {
     try {
 
         var postData = req.body;
-        var newShopid = "";
-        var shopCreated;
-        var countDoc = await Shop.countDocuments({}).exec();
+        var newBranchid = "";
+        var branchCreated;
+        var countDoc = await Branch.countDocuments({}).exec();
         if (countDoc == 0) {
-            shopCreated = await Shop.create({
+            branchCreated = await Branch.create({
                 name: postData.name,
                 address: postData.address,
                 userid: postData.userid,
-                shopid: "BRANCH001"
+                branchid: "BRANCH001"
             });
         }
         if (countDoc > 0) {
-            newShopid = "BRANCH00" + countDoc;
+            newBranchid = "BRANCH00" + countDoc;
             var n = 1;
             for (var i = 0; i < n; i++) {
-                var isExistShop = await Shop.findOne({ "shopid": newShopid }).exec();
-                if (isExistShop) {
+                var isExistBranch = await Branch.findOne({ "branchid": newBranchid }).exec();
+                if (isExistBranch) {
                     countDoc = countDoc + 1
-                    newShopid = "BRANCH00" + countDoc;
+                    newBranchid = "BRANCH00" + countDoc;
                     n = n + 1;
                 } else {
                     n = 0;
-                    Shop.create({
+                    Branch.create({
                         name: postData.name,
                         address: postData.address,
                         userid: postData.userid,
-                        shopid: newShopid
+                        branchid: newBranchid
                     }, function (err, suc) {
                         if (!err) {
 
@@ -47,14 +47,14 @@ export async function addCategory(req, res, next) {
 
                                 Category.updateOne(
                                     { "_id": ret.user_id },
-                                    { $push: { shopid: [newShopid] } },
+                                    { $push: { branchid: [newBranchid] } },
                                     function (err, result) {
                                         if (err) {
                                             res.send(err);
                                         } else {
                                             res.status(201).json({
                                                 status: "success",
-                                                message: "Shop created successfuly",
+                                                message: "Branch created successfuly",
                                             });
                                         }
                                     }
@@ -87,7 +87,7 @@ export async function postFirstCategoryRegister(req, res, next) {
                 email: data.email,
                 phone: data.phone,
                 address: data.address,
-                shopid: '',
+                branchid: '',
                 usertype: "SA"
             });
 
@@ -155,7 +155,7 @@ export async function postLogin(req, res, next) {
         //     email: data.email,
         //     phone: data.phone,
         //     address: data.address,
-        //     shopid: '',
+        //     branchid: '',
         //     usertype: "O"
         //   });
 

@@ -1,11 +1,11 @@
-import Shop from "../models/shopModel.js";
+import Branch from "../models/branchModel.js";
 import User from "../models/userModel.js";
 import { getAll, getOne, deleteOne } from "./BaseController.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken"
 import { tokendata } from '../utils/tokenKey.js'
 
-export async function addShop(req, res, next) {
+export async function addBranch(req, res, next) {
     try {
 
         var returnTokenData;
@@ -16,48 +16,48 @@ export async function addShop(req, res, next) {
 
         })
         var postData = req.body;
-        var newShopid = "";
-        var createShop;
-        var countDoc = await Shop.countDocuments({}).exec();
+        var newBranchid = "";
+        var createBranch;
+        var countDoc = await Branch.countDocuments({}).exec();
         if (countDoc == 0) {
-            createShop = new Shop({
+            createBranch = new Branch({
                 name: postData.name,
                 address: postData.address,
                 userid: returnTokenData.user_id,
-                shopid: "BRANCH001"
+                branchid: "BRANCH001"
             })
-            createShop.save((err, result) => {
+            createBranch.save((err, result) => {
                 if (!err) {
                     res.status(201).json({
                         status: "success",
-                        message: "Shop created successfuly",
+                        message: "Branch created successfuly",
                     });
                 }
             })
         }
         if (countDoc > 0) {
-            newShopid = "BRANCH00" + countDoc;
+            newBranchid = "BRANCH00" + countDoc;
             var n = 1;
             for (var i = 0; i < n; i++) {
-                var isExistShop = await Shop.findOne({ "shopid": newShopid }).exec();
-                if (isExistShop) {
+                var isExistBranch = await Branch.findOne({ "branchid": newBranchid }).exec();
+                if (isExistBranch) {
                     countDoc = countDoc + 1
-                    newShopid = "BRANCH00" + countDoc;
+                    newBranchid = "BRANCH00" + countDoc;
                     n = n + 1;
                 } else {
                     n = 0;
-                    Shop.create({
+                    Branch.create({
                         name: postData.name,
                         address: postData.address,
                         userid: returnTokenData.user_id,
-                        shopid: newShopid
+                        branchid: newBranchid
                     }, function (err, suc) {
                         if (!err) {
 
 
                             User.updateOne(
                                 { "_id": returnTokenData.user_id },
-                                { $push: { shopid: [newShopid] } },
+                                { $push: { branchid: [newBranchid] } },
                                 function (err, result) {
                                     if (err) {
                                         res.send(err);
@@ -65,7 +65,7 @@ export async function addShop(req, res, next) {
                                         console.log("ddddd")
                                         res.status(201).json({
                                             status: "success",
-                                            message: "Shop created successfuly",
+                                            message: "Branch created successfuly",
                                         });
                                     }
                                 }
@@ -98,7 +98,7 @@ export async function postFirstUserRegister(req, res, next) {
                 email: data.email,
                 phone: data.phone,
                 address: data.address,
-                shopid: '',
+                branchid: '',
                 usertype: "SA"
             });
 
@@ -158,74 +158,12 @@ export async function postLogin(req, res, next) {
             }
         }
 
-
-        // if (exist.length == 0) {
-        //   const createData = await User.create({
-        //     username: data.username,
-        //     password: bcrypt.hashSync(data.password, 10),
-        //     email: data.email,
-        //     phone: data.phone,
-        //     address: data.address,
-        //     shopid: '',
-        //     usertype: "O"
-        //   });
-
-        //   res.status(201).json({
-        //     status: "success",
-        //     message: "User Created Successfuly",
-        //     data: {
-        //       createData,
-        //     },
-        //   });
-        // } else {
-        //   res.status(201).json({
-        //     status: "success",
-        //     message: "User Already Exist",
-        //     data: {
-        //       exist,
-        //     },
-        //   });
-        // }
     } catch (error) {
         console.log(error)
         next(error);
     }
 }
 
-// export async function postLogin(req, res, next) {
-//   try {
-//       console.log("trig.................",data)
-//       User.findOne({ 'email': req.body.email }, function (err, user) {
-//           if (!user) {
-//               return res.status(422).send({ message: "Email does not exist" });
-//           }
-//           if (user) {
-//               if (user.isActive == "false")
-//                   return res.status(422).send({ message: "We are precessing your data..." });
-//               if (user.isBlocked == "true")
-//                   return res.status(422).send({ message: "Sorry.. we are not processing your data, please contact your admin..." });
-//               var result = bcrypt.compareSync(req.body.password, user.password);
-//               if (result) {
-
-//                   const token = jwt.sign(
-//                       { user_id: user._id, email: user.email, usertype: user.usertype, username: user.username },
-//                       process.env.TOKEN_KEY,
-//                       {
-//                           expiresIn: "2h",
-//                       }
-//                   );
-
-//                   return res.json({ token: token });
-//               } else {
-//                   return res.status(422).send({ message: "The password is invalid" });
-//               }
-//           }
-
-//       });
-//   } catch (error) {
-//       res.status(500).send(error);
-//   }
-// }
 
 export async function updateRecharge(req, res, next) {
     try {

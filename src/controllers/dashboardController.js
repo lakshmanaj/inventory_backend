@@ -1,4 +1,4 @@
-import Shop from "../models/shopModel.js";
+import Branch from "../models/branchModel.js";
 import User from "../models/userModel.js";
 import { getAll, getOne, deleteOne } from "./BaseController.js";
 import bcrypt from "bcryptjs";
@@ -8,7 +8,7 @@ import { tokendata } from '../utils/tokenKey.js'
 
 
 
-export async function shopListCard(req, res, next) {
+export async function branchListCard(req, res, next) {
     try {
         console.log("trigger");
         const token =
@@ -23,9 +23,9 @@ export async function shopListCard(req, res, next) {
                 },
                 {
                     $lookup: {
-                        from: "shops",
-                        localField: "shopid",
-                        foreignField: "shopid",
+                        from: "branchs",
+                        localField: "branchid",
+                        foreignField: "branchid",
                         as: "branch_info",
                     },
                 },
@@ -58,12 +58,12 @@ export async function shopListCard(req, res, next) {
             //     result=[result]
 
             //     console.log("user details", result)
-            //     Shop.find({ shopid: { $in: result[0].shopid } }, function (err2, response) {
-            //         console.log("shop details", response)
+            //     Branch.find({ branchid: { $in: result[0].branchid } }, function (err2, response) {
+            //         console.log("branch details", response)
             //         response.forEach(element => {
-            //             shopidArr.push(element.shopid)
+            //             branchidArr.push(element.branchid)
             //         });
-            //         console.log("array", shopidArr)
+            //         console.log("array", branchidArr)
 
 
 

@@ -5,7 +5,7 @@ const salesSchema = new Schema({
     invoice_number: {
         type: String,
     },
-    shopid: {
+    branchid: {
         type: String,
     },
     total_discount: {

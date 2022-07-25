@@ -18,16 +18,13 @@ export async function postFirstUserRegister(req, res, next) {
         email: data.email,
         phone: data.phone,
         address: data.address,
-        shopid: '',
+        branchid: '',
         usertype: "SA"
       });
 
       res.status(201).json({
         status: "success",
         message: "User Created Successfuly",
-        data: {
-          createData,
-        },
       });
     } else {
       res.status(422).json({
@@ -60,7 +57,7 @@ export async function postLogin(req, res, next) {
       var result = bcrypt.compareSync(req.body.password, user.password);
       if (result) {
         const token = jwt.sign(
-          { user_id: user._id, email: user.email, usertype: user.usertype, username: user.username, shopid: user.shopid },
+          { userid: user._id, email: user.email, usertype: user.usertype, username: user.username, branchid: user.branchid },
           process.env.TOKEN_KEY,
           {
             expiresIn: "2h",
@@ -73,34 +70,6 @@ export async function postLogin(req, res, next) {
       }
     }
 
-
-    // if (exist.length == 0) {
-    //   const createData = await User.create({
-    //     username: data.username,
-    //     password: bcrypt.hashSync(data.password, 10),
-    //     email: data.email,
-    //     phone: data.phone,
-    //     address: data.address,
-    //     shopid: '',
-    //     usertype: "O"
-    //   });
-
-    //   res.status(201).json({
-    //     status: "success",
-    //     message: "User Created Successfuly",
-    //     data: {
-    //       createData,
-    //     },
-    //   });
-    // } else {
-    //   res.status(201).json({
-    //     status: "success",
-    //     message: "User Already Exist",
-    //     data: {
-    //       exist,
-    //     },
-    //   });
-    // }
   } catch (error) {
     console.log(error)
     next(error);
@@ -117,7 +86,7 @@ export async function configureToken(req, res, next) {
     console.log("saved token", token)
     tokendata(token).then(decodedToken => {
       console.log("return token", decodedToken)
-      decodedToken.shopid = data.shopid
+      decodedToken.branchid = data.branchid
       console.log("return token", decodedToken)
 
       const token2 = jwt.sign(
@@ -126,7 +95,7 @@ export async function configureToken(req, res, next) {
           email: decodedToken.email,
           usertype: decodedToken.usertype,
           username: decodedToken.username,
-          shopid: data.shopid
+          branchid: data.branchid
         },
         process.env.TOKEN_KEY,
         {
@@ -173,7 +142,7 @@ export async function configureToken(req, res, next) {
     //     email: data.email,
     //     phone: data.phone,
     //     address: data.address,
-    //     shopid: '',
+    //     branchid: '',
     //     usertype: "O"
     //   });
 

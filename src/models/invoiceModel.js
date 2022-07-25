@@ -5,7 +5,7 @@ const invoiceSchema = new Schema({
     invoice_number: {
         type: String,
     },
-    shopid: {
+    branchid: {
         type: String,
     },
     userid: {
