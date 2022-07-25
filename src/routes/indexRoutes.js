@@ -28,7 +28,7 @@ router.put("/branch/update", verifyToken, updateBranch);
 import { addDistributor, getAllDistributor, getOneDistributor, deleteDistributor, updateDistributor }
     from "../controllers/distributorController.js";
 
-    router.post("/distributor/add", verifyToken, addDistributor);
+router.post("/distributor/add", verifyToken, addDistributor);
 router.get("/distributor/getall", verifyToken, getAllDistributor)
 router.get("/distributor/getone", verifyToken, getOneDistributor)
 router.delete("/distributor/delete", verifyToken, deleteDistributor);
@@ -45,6 +45,17 @@ router.get("/Category/getone", verifyToken, getOneCategory)
 router.delete("/Category/delete", verifyToken, deleteCategory);
 router.put("/Category/update", verifyToken, updateCategory);
 //end Category controller
+
+//Godown controller
+import { addGodown, getAllGodown, getOneGodown, deleteGodown, updateGodown }
+    from "../controllers/godownController.js";
+
+router.post("/Godown/add", verifyToken, addGodown);
+router.get("/Godown/getall", verifyToken, getAllGodown)
+router.get("/Godown/getone", verifyToken, getOneGodown)
+router.delete("/Godown/delete", verifyToken, deleteGodown);
+router.put("/Godown/update", verifyToken, updateGodown);
+//end Godown controller
 
 
 
