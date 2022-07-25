@@ -5,13 +5,19 @@ const distributorSchema = new Schema({
     name: {
         type: String,
     },
+    email: {
+        type: String,
+    },
     address: {
         type: String,
     },
     mobile: {
         type: String,
     },
-    distributorid: {
+    card: {
+        type: String
+    },
+    branchid: {
         type: Array,
     },
     userid: {
@@ -23,11 +29,11 @@ const distributorSchema = new Schema({
     updated_at: {
         type: Date,
     },
-    is_validated: {
+    is_validated: { // Will be true after verified by SA || AD
         type: Boolean, default: false,
     },
-    is_active: {
-        type: Boolean, default: false,
+    is_active: { //active or not
+        type: Boolean, default: true,
     },
 });
 

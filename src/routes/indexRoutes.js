@@ -24,6 +24,17 @@ router.post("/branch/add", verifyToken, addBranch);
 router.put("/branch/update", verifyToken, updateBranch);
 //end Branch controller
 
+//Branch controller
+import { addDistributor, getAllDistributor, getOneDistributor, deleteDistributor, updateDistributor }
+    from "../controllers/distributorController.js";
+
+    router.post("/distributor/add", verifyToken, addDistributor);
+router.get("/distributor/getall", verifyToken, getAllDistributor)
+router.get("/distributor/getone", verifyToken, getOneDistributor)
+router.delete("/distributor/delete", verifyToken, deleteDistributor);
+router.put("/distributor/update", verifyToken, updateDistributor);
+//end Branch controller
+
 
 
 //User controller
