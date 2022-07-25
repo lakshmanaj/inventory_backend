@@ -105,35 +105,6 @@ export async function configureToken(req, res, next) {
 
       return res.json({ token: token2, message: "Configured successfully" });
     });
-    return;
-    const user = await User.findOne({ email: data.email });
-    if (!user) {
-      return res.status(422).send({ message: "Email does not exist" });
-    }
-    if (user.length == 0) {
-      return res.status(422).send({ message: "Email does not exist" });
-    }
-    if (user) {
-      if (user.is_active == false)
-        return res.status(422).send({ message: "We are precessing your data..." });
-      if (user.is_blocked == true)
-        return res.status(422).send({ message: "Sorry.. we are not processing your data, please contact your admin..." });
-      var result = bcrypt.compareSync(req.body.password, user.password);
-      if (result) {
-        const token = jwt.sign(
-          { userid: user._id, email: user.email, usertype: user.usertype, username: user.username },
-          process.env.TOKEN_KEY,
-          {
-            expiresIn: "2h",
-          }
-        );
-
-        return res.json({ token: token, message: "Loggedin successfully" });
-      } else {
-        return res.status(422).send({ message: "Invalid password" });
-      }
-    }
-
 
   } catch (error) {
     console.log(error)
