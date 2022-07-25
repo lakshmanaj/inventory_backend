@@ -24,7 +24,7 @@ router.post("/branch/add", verifyToken, addBranch);
 router.put("/branch/update", verifyToken, updateBranch);
 //end Branch controller
 
-//Branch controller
+//Distributor controller
 import { addDistributor, getAllDistributor, getOneDistributor, deleteDistributor, updateDistributor }
     from "../controllers/distributorController.js";
 
@@ -33,7 +33,18 @@ router.get("/distributor/getall", verifyToken, getAllDistributor)
 router.get("/distributor/getone", verifyToken, getOneDistributor)
 router.delete("/distributor/delete", verifyToken, deleteDistributor);
 router.put("/distributor/update", verifyToken, updateDistributor);
-//end Branch controller
+//end Distributor controller
+
+//Category controller
+import { addCategory, getAllCategory, getOneCategory, deleteCategory, updateCategory }
+    from "../controllers/categoryController.js";
+
+router.post("/Category/add", verifyToken, addCategory);
+router.get("/Category/getall", verifyToken, getAllCategory)
+router.get("/Category/getone", verifyToken, getOneCategory)
+router.delete("/Category/delete", verifyToken, deleteCategory);
+router.put("/Category/update", verifyToken, updateCategory);
+//end Category controller
 
 
 
