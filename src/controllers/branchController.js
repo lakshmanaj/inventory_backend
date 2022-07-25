@@ -23,7 +23,7 @@ export async function addBranch(req, res, next) {
             createBranch = new Branch({
                 name: postData.name,
                 address: postData.address,
-                userid: returnTokenData.user_id,
+                userid: returnTokenData.userid,
                 branchid: "BRANCH001"
             })
             createBranch.save((err, result) => {
@@ -49,14 +49,14 @@ export async function addBranch(req, res, next) {
                     Branch.create({
                         name: postData.name,
                         address: postData.address,
-                        userid: returnTokenData.user_id,
+                        userid: returnTokenData.userid,
                         branchid: newBranchid
                     }, function (err, suc) {
                         if (!err) {
 
 
                             User.updateOne(
-                                { "_id": returnTokenData.user_id },
+                                { "_id": returnTokenData.userid },
                                 { $push: { branchid: [newBranchid] } },
                                 function (err, result) {
                                     if (err) {
@@ -144,7 +144,7 @@ export async function postLogin(req, res, next) {
             if (result) {
 
                 const token = jwt.sign(
-                    { user_id: user._id, email: user.email, usertype: user.usertype, username: user.username },
+                    { userid: user._id, email: user.email, usertype: user.usertype, username: user.username },
                     // process.env.TOKEN_KEY,
                     "34354",
                     {
@@ -164,34 +164,121 @@ export async function postLogin(req, res, next) {
     }
 }
 
-
-export async function updateRecharge(req, res, next) {
+export async function BranchDetails(req, res, next) {
     try {
-        const id = req.params.id;
         const data = req.body;
+        console.log("data", data)
+        const branch = await Branch.findOne({ "_id": data.branchid });
 
-        const editedData = {
-            number: data.number,
-            amount: data.amount,
-            network: data.network,
-            balance: data.balance,
-            status: data.status,
-            is_active: data.is_active,
-            is_verified: data.is_verified,
-            is_deleted: data.is_deleted,
-        };
-        const editDetail = await User.findByIdAndUpdate(id, editedData, {
-            new: true,
-            runValidators: true,
+        if (branch) {
+            return res.json({ branch: branch });
+        }
+
+    } catch (error) {
+        console.log(error)
+        next(error);
+    }
+}
+
+
+export async function branchListCard(req, res, next) {
+    try {
+        console.log("trigger");
+        const token =
+            req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
+        tokendata(token).then(ret => {
+            console.log("_id", ret.userid)
+            User.aggregate([
+                {
+                    $match: {
+                        "email": ret.email
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "branchs",
+                        localField: "branchid",
+                        foreignField: "branchid",
+                        as: "branch_info",
+                    },
+                },
+                {
+                    $unwind: "$branch_info",
+                },
+
+
+
+
+            ])
+                .then((result) => {
+                    console.log("result", result)
+                    res.status(201).json({
+                        status: "success",
+                        result
+                    });
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+
+        })
+
+    } catch (error) {
+        console.log(error)
+        next(error);
+    }
+}
+
+
+var myPromise = () => (
+    new Promise((resolve, reject) => {
+
+        //do something, fetch something....
+        //you guessed it, mongo queries go here.
+        User.find({})
+            //I can continue to process my result inside my promise
+            .then(function (result) {
+                //another query can be called based on my result...
+                return result;
+            })
+            //This promise may take a while...
+            .then(function (result) {
+                //post processing, non related mongo code...
+                //when you are ready, you can resolve the promise.
+                resolve(result);
+            });
+    })
+);
+
+var callMyPromise = async () => {
+    var result = await (myPromise());
+    return result;
+};
+
+// callMyPromise().then(function (result) {
+//     res.status(201).json({
+//         data: result, "value": i
+//     });
+// });
+
+export async function updateBranch(req, res, next) {
+    try {
+        const id = req.query.id;
+        const data = req.body;
+        data.updated_at = new Date();
+        Branch.findOneAndUpdate({ "_id": id }, data, (error, doc) => {
+            if (!error) {
+                res.status(201).json({
+                    message: "Branch details updated"
+                });
+            } else {
+                res.status(422).json({
+                    message: "Failed"
+                });
+            }
         });
 
-        res.status(201).json({
-            status: "success",
-            message: "Recharge Details Updated Successfuly",
-            data: {
-                editDetail,
-            },
-        });
+
     } catch (error) {
         next(error);
     }
