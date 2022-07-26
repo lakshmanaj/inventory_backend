@@ -1,4 +1,5 @@
 import User from "../models/userModel.js";
+import { isProcessed_Branch } from "../utils/mypromise.js";
 import { getAll, getOne, deleteOne } from "./BaseController.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken"
@@ -76,35 +77,42 @@ export async function postLogin(req, res, next) {
   }
 }
 
+
+
+
+
 export async function configureToken(req, res, next) {
   try {
     const data = req.body;
-    console.log(data)
+    isProcessed_Branch(data).then(response => {
 
-    const token =
-      req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
-    console.log("saved token", token)
-    tokendata(token).then(decodedToken => {
-      console.log("return token", decodedToken)
-      decodedToken.branchid = data.branchid
-      console.log("return token", decodedToken)
+      const token =
+        req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
+      console.log("saved token", token)
+      tokendata(token).then(decodedToken => {
+        decodedToken.branchid = data.branchid
+        const token2 = jwt.sign(
+          {
+            userid: decodedToken.userid,
+            email: decodedToken.email,
+            usertype: decodedToken.usertype,
+            username: decodedToken.username,
+            branchid: data.branchid
+          },
+          process.env.TOKEN_KEY,
+          {
+            expiresIn: "10h",
+          }
+        );
 
-      const token2 = jwt.sign(
-        {
-          userid: decodedToken.userid,
-          email: decodedToken.email,
-          usertype: decodedToken.usertype,
-          username: decodedToken.username,
-          branchid: data.branchid
-        },
-        process.env.TOKEN_KEY,
-        {
-          expiresIn: "10h",
-        }
-      );
+        return res.json({ token: token2, message: "Configured successfully" });
+      });
 
-      return res.json({ token: token2, message: "Configured successfully" });
-    });
+
+    }).catch(err => {
+      return res.status(422).send(err);
+    })
+
 
   } catch (error) {
     console.log(error)
