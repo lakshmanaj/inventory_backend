@@ -69,6 +69,18 @@ router.put("/Product/update", verifyToken, updateProduct);
 //end Product controller
 
 
+//Inbound controller
+import { addInbound, getAllInbound, getOneInbound, deleteInbound, updateInbound }
+    from "../controllers/InboundController.js";
+
+router.post("/Inbound/add", verifyToken, addInbound);
+router.get("/Inbound/getall", verifyToken, getAllInbound)
+router.get("/Inbound/getone", verifyToken, getOneInbound)
+router.delete("/Inbound/delete", verifyToken, deleteInbound);
+router.put("/Inbound/update", verifyToken, updateInbound);
+//end Inbound controller
+
+
 
 //User controller
 // import { branchListCard }
