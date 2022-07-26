@@ -57,6 +57,17 @@ router.delete("/Godown/delete", verifyToken, deleteGodown);
 router.put("/Godown/update", verifyToken, updateGodown);
 //end Godown controller
 
+//Product controller
+import { addProduct, getAllProduct, getOneProduct, deleteProduct, updateProduct }
+    from "../controllers/productController.js";
+
+router.post("/Product/add", verifyToken, addProduct);
+router.get("/Product/getall", verifyToken, getAllProduct)
+router.get("/Product/getone", verifyToken, getOneProduct)
+router.delete("/Product/delete", verifyToken, deleteProduct);
+router.put("/Product/update", verifyToken, updateProduct);
+//end Product controller
+
 
 
 //User controller

@@ -2,6 +2,15 @@ import mongoose from "mongoose";
 const { Schema, model } = mongoose;
 
 const productSchema = new Schema({
+    branchid: {
+        type: String,
+    },
+    cetegoryid: {
+        type: String,
+    },
+    userid: {
+        type: String,
+    },
     name: {
         type: String,
     },
@@ -13,17 +22,11 @@ const productSchema = new Schema({
     },
     barcode: {
         type: String,
-    }, 
+    },
     qty: {
         type: String,
-    }, 
+    },
     discount: {
-        type: String,
-    },
-    cetegoryid: {
-        type: String,
-    },
-    userid: {
         type: String,
     },
     created_at: {
@@ -31,10 +34,7 @@ const productSchema = new Schema({
     },
     updated_at: {
         type: Date,
-    },
-    branchid: {
-        type: String,
-    },
+    }
 
 });
 
