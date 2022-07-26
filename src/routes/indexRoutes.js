@@ -91,6 +91,17 @@ router.delete("/Outbound/delete", verifyToken, deleteOutbound);
 router.put("/Outbound/update", verifyToken, updateOutbound);
 //end Outbound controller
 
+//Customer controller
+import { addCustomer, getAllCustomer, getOneCustomer, deleteCustomer, updateCustomer }
+    from "../controllers/CustomerController.js";
+
+router.post("/Customer/add", verifyToken, addCustomer);
+router.get("/Customer/getall", verifyToken, getAllCustomer)
+router.get("/Customer/getone", verifyToken, getOneCustomer)
+router.delete("/Customer/delete", verifyToken, deleteCustomer);
+router.put("/Customer/update", verifyToken, updateCustomer);
+//end Customer controller
+
 
 
 //User controller
