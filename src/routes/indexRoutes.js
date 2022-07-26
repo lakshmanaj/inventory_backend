@@ -80,6 +80,17 @@ router.delete("/Inbound/delete", verifyToken, deleteInbound);
 router.put("/Inbound/update", verifyToken, updateInbound);
 //end Inbound controller
 
+//Outbound controller
+import { addOutbound, getAllOutbound, getOneOutbound, deleteOutbound, updateOutbound }
+    from "../controllers/OutboundController.js";
+
+router.post("/Outbound/add", verifyToken, addOutbound);
+router.get("/Outbound/getall", verifyToken, getAllOutbound)
+router.get("/Outbound/getone", verifyToken, getOneOutbound)
+router.delete("/Outbound/delete", verifyToken, deleteOutbound);
+router.put("/Outbound/update", verifyToken, updateOutbound);
+//end Outbound controller
+
 
 
 //User controller
