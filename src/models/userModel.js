@@ -61,6 +61,10 @@ const userSchema = new Schema({
     paidamount: {
         type: Number,
         required: [false, "Required amount"],
+    },
+    lastlogin: {
+        type: Date,
+        required: [false, "Required login"],
     }
 
 });
