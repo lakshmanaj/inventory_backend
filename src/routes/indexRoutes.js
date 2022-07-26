@@ -3,8 +3,6 @@ import verifyToken from "../utils/verifyToken.js";
 
 const router = Router();
 
-
-
 //User controller
 import { postLogin, postFirstUserRegister, configureToken }
     from "../controllers/UserController.js";
@@ -16,10 +14,10 @@ router.post("/auth/configure/token", verifyToken, configureToken);
 
 
 //Branch controller
-import { addBranch, branchListCard, BranchDetails, updateBranch }
+import { addBranch, getAllBranch, getOneBranch, updateBranch }
     from "../controllers/branchController.js";
-router.get("/branch/detail", verifyToken, BranchDetails)
-router.get("/dashboard/branchlist/card", verifyToken, branchListCard)
+router.get("/branch/getone", verifyToken, getOneBranch)
+router.get("/branch/getall", verifyToken, getAllBranch)
 router.post("/branch/add", verifyToken, addBranch);
 router.put("/branch/update", verifyToken, updateBranch);
 //end Branch controller

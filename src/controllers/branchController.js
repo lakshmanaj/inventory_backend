@@ -85,86 +85,8 @@ export async function addBranch(req, res, next) {
     }
 }
 
-export async function postFirstUserRegister(req, res, next) {
-    try {
-        const data = req.body;
-        console.log(".........", data)
-        const exist = await User.find({ email: data.email });
 
-        if (exist.length == 0) {
-            const createData = await User.create({
-                username: data.username,
-                password: bcrypt.hashSync(data.password, 10),
-                email: data.email,
-                phone: data.phone,
-                address: data.address,
-                branchid: '',
-                usertype: "SA"
-            });
-
-            res.status(201).json({
-                status: "success",
-                message: "User Created Successfuly",
-                data: {
-                    createData,
-                },
-            });
-        } else {
-            res.status(201).json({
-                status: "success",
-                message: "User Already Exist",
-                data: {
-                    exist,
-                },
-            });
-        }
-    } catch (error) {
-        console.log(error)
-        next(error);
-    }
-}
-
-export async function postLogin(req, res, next) {
-    try {
-        const data = req.body;
-        console.log(data)
-        const user = await User.findOne({ email: data.email });
-        if (!user) {
-            return res.status(422).send({ message: "Email does not exist" });
-        }
-        if (user.length == 0) {
-            return res.status(422).send({ message: "Email does not exist" });
-        }
-        if (user) {
-            if (user.is_active == false)
-                return res.status(422).send({ message: "We are precessing your data..." });
-            if (user.is_blocked == true)
-                return res.status(422).send({ message: "Sorry.. we are not processing your data, please contact your admin..." });
-            var result = bcrypt.compareSync(req.body.password, user.password);
-            if (result) {
-
-                const token = jwt.sign(
-                    { userid: user._id, email: user.email, usertype: user.usertype, username: user.username },
-                    // process.env.TOKEN_KEY,
-                    "34354",
-                    {
-                        expiresIn: "2h",
-                    }
-                );
-
-                return res.json({ token: token, message: "Loggedin successfully" });
-            } else {
-                return res.status(422).send({ message: "Invalid password" });
-            }
-        }
-
-    } catch (error) {
-        console.log(error)
-        next(error);
-    }
-}
-
-export async function BranchDetails(req, res, next) {
+export async function getOneBranch(req, res, next) {
     try {
         const data = req.body;
         console.log("data", data)
@@ -181,7 +103,7 @@ export async function BranchDetails(req, res, next) {
 }
 
 
-export async function branchListCard(req, res, next) {
+export async function getAllBranch(req, res, next) {
     try {
         console.log("trigger");
         const token =
@@ -191,7 +113,7 @@ export async function branchListCard(req, res, next) {
             User.aggregate([
                 {
                     $match: {
-                        "email": ret.email
+                        email: ret.email, branchid: ret.branchid
                     }
                 },
                 {
