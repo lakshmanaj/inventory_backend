@@ -8,7 +8,7 @@ import { postLogin, postFirstUserRegister, configureToken }
     from "../controllers/UserController.js";
 
 router.post("/auth/login", postLogin);
-router.post("/auth/first/register", verifyToken, postFirstUserRegister);
+router.post("/auth/first/register", postFirstUserRegister);
 router.post("/auth/configure/token", verifyToken, configureToken);
 //end User controller
 
@@ -16,9 +16,9 @@ router.post("/auth/configure/token", verifyToken, configureToken);
 //Branch controller
 import { addBranch, getAllBranch, getOneBranch, updateBranch }
     from "../controllers/branchController.js";
+router.post("/branch/add", verifyToken, addBranch);
 router.get("/branch/getone", verifyToken, getOneBranch)
 router.get("/branch/getall", verifyToken, getAllBranch)
-router.post("/branch/add", verifyToken, addBranch);
 router.put("/branch/update", verifyToken, updateBranch);
 //end Branch controller
 
@@ -99,20 +99,6 @@ router.get("/Customer/getone", verifyToken, getOneCustomer)
 router.delete("/Customer/delete", verifyToken, deleteCustomer);
 router.put("/Customer/update", verifyToken, updateCustomer);
 //end Customer controller
-
-
-
-//User controller
-// import { branchListCard }
-//     from "../controllers/dashboardController.js";
-
-
-//User controller
-
-
-
-
-
 
 
 
