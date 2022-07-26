@@ -23,7 +23,7 @@ const outboundSchema = new Schema({
     created_at: {
         type: Date, default: new Date(),
     },
-    updated_at: {
+    updated_at: { 
         type: Date,
     },
 
