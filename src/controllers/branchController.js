@@ -28,10 +28,21 @@ export async function addBranch(req, res, next) {
             })
             createBranch.save((err, result) => {
                 if (!err) {
-                    res.status(201).json({
-                        status: "success",
-                        message: "Branch created successfuly",
-                    });
+
+                    User.updateOne(
+                        { "_id": returnTokenData.userid },
+                        { $push: { branchid: "BRANCH001" } },
+                        function (err, result) {
+                            if (err) {
+                                res.send(err);
+                            } else {
+                                res.status(201).json({
+                                    status: "success",
+                                    message: "Branch created successfuly",
+                                });
+                            }
+                        }
+                    );
                 }
             })
         }
@@ -62,7 +73,6 @@ export async function addBranch(req, res, next) {
                                     if (err) {
                                         res.send(err);
                                     } else {
-                                        console.log("ddddd")
                                         res.status(201).json({
                                             status: "success",
                                             message: "Branch created successfuly",
@@ -89,7 +99,6 @@ export async function addBranch(req, res, next) {
 export async function getOneBranch(req, res, next) {
     try {
         const data = req.body;
-        console.log("data", data)
         const branch = await Branch.findOne({ "_id": data.branchid });
 
         if (branch) {
@@ -105,20 +114,18 @@ export async function getOneBranch(req, res, next) {
 
 export async function getAllBranch(req, res, next) {
     try {
-        console.log("trigger");
         const token =
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(ret => {
-            console.log("_id", ret.userid)
             User.aggregate([
                 {
                     $match: {
-                        email: ret.email, branchid: ret.branchid
+                        email: ret.email
                     }
                 },
                 {
                     $lookup: {
-                        from: "branchs",
+                        from: "branches",
                         localField: "branchid",
                         foreignField: "branchid",
                         as: "branch_info",
@@ -133,7 +140,6 @@ export async function getAllBranch(req, res, next) {
 
             ])
                 .then((result) => {
-                    console.log("result", result)
                     res.status(201).json({
                         status: "success",
                         result
