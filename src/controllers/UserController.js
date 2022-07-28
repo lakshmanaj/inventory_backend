@@ -51,14 +51,25 @@ export async function postLogin(req, res, next) {
       return res.status(422).send({ message: "Email does not exist" });
     }
     if (user) {
-      if (user.is_active == false)
+
+      if (user.is_validated == false)
         return res.status(422).send({ message: "We are precessing your data..." });
+
+      if (user.is_active == false)
+        return res.status(422).send({ message: "Your account is not active" });
+
       if (user.is_blocked == true)
         return res.status(422).send({ message: "Sorry.. we are not processing your data, please contact your admin..." });
       var result = bcrypt.compareSync(req.body.password, user.password);
       if (result) {
         const token = jwt.sign(
-          { userid: user._id, email: user.email, usertype: user.usertype, username: user.username, branchid: user.branchid },
+          {
+            userid: user._id,
+            email: user.email,
+            usertype: user.usertype,
+            username: user.username,
+            branchid: user.branchid
+          },
           process.env.TOKEN_KEY,
           {
             expiresIn: "2h",
@@ -88,7 +99,6 @@ export async function configureToken(req, res, next) {
 
       const token =
         req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
-      console.log("saved token", token)
       tokendata(token).then(decodedToken => {
         decodedToken.branchid = data.branchid
         const token2 = jwt.sign(
