@@ -39,7 +39,7 @@ import { addCategory, getAllCategory, getOneCategory, deleteCategory, updateCate
 
 router.post("/Category/add", verifyToken, addCategory);
 router.get("/Category/getall", verifyToken, getAllCategory)
-router.get("/Category/getone", verifyToken, getOneCategory)
+router.get("/Category/getone/:id", verifyToken, getOneCategory)
 router.delete("/Category/delete", verifyToken, deleteCategory);
 router.put("/Category/update", verifyToken, updateCategory);
 //end Category controller
