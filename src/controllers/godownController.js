@@ -11,7 +11,6 @@ export async function addGodown(req, res, next) {
             req.body.branchid = returnTokenData.branchid;
             req.body.created_at = returnTokenData.created_at;
 
-            console.log("data..", req.body)
             var createGodown = new Godown(req.body)
             createGodown.save((err, result) => {
                 if (!err) {
@@ -40,7 +39,6 @@ export async function updateGodown(req, res, next) {
             const id = req.query.id;
             const data = req.body;
             data.updated_at = new Date();
-            console.log("data...", data)
 
             Godown.findOneAndUpdate({ "_id": id, "branchid": returnTokenData.branchid }, data, (error, doc) => {
                 if (!error) {

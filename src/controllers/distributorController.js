@@ -16,7 +16,6 @@ export async function addDistributor(req, res, next) {
             req.body.branchid = returnTokenData.branchid;
             req.body.created_at = returnTokenData.created_at;
 
-            console.log("data..", req.body)
             var createDistributor = new Distributor(req.body)
             createDistributor.save((err, result) => {
                 if (!err) {
@@ -45,7 +44,6 @@ export async function updateDistributor(req, res, next) {
             const id = req.query.id;
             const data = req.body;
             data.updated_at = new Date();
-            console.log("data...", data)
 
             Distributor.findOneAndUpdate({ "_id": id, "branchid": returnTokenData.branchid }, data, (error, doc) => {
                 if (!error) {

@@ -11,7 +11,6 @@ export async function addOutbound(req, res, next) {
             req.body.branchid = returnTokenData.branchid;
             req.body.created_at = returnTokenData.created_at;
 
-            console.log("data..", req.body)
             var createOutbound = new Outbound(req.body)
             createOutbound.save((err, result) => {
                 if (!err) {
@@ -40,7 +39,6 @@ export async function updateOutbound(req, res, next) {
             const id = req.query.id;
             const data = req.body;
             data.updated_at = new Date();
-            console.log("data...", data)
 
             Outbound.findOneAndUpdate({ "_id": id, "branchid": returnTokenData.branchid }, data, (error, doc) => {
                 if (!error) {

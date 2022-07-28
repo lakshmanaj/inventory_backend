@@ -9,9 +9,8 @@ export async function addCategory(req, res, next) {
 
             req.body.userid = returnTokenData.userid;
             req.body.branchid = returnTokenData.branchid;
-            req.body.created_at = returnTokenData.created_at;
+            req.body.created_at = new Date;
 
-            console.log("data..", req.body)
             var createCategory = new Category(req.body)
             createCategory.save((err, result) => {
                 if (!err) {
@@ -40,7 +39,6 @@ export async function updateCategory(req, res, next) {
             const id = req.query.id;
             const data = req.body;
             data.updated_at = new Date();
-            console.log("data...", data)
 
             Category.findOneAndUpdate({ "_id": id, "branchid": returnTokenData.branchid }, data, (error, doc) => {
                 if (!error) {
@@ -90,13 +88,12 @@ export async function deleteCategory(req, res, next) {
 
 export async function getOneCategory(req, res, next) {
     try {
-
         const token =
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(returnTokenData => {
 
             const id = req.body.Categoryid;
-            Category.findOne({ "_id": id, branchid: returnTokenData.branchid }, (error, doc) => {
+            Category.findOne({ "_id": req.params.id, branchid: returnTokenData.branchid }, (error, doc) => {
                 if (!error) {
                     res.status(201).json({
                         data: doc

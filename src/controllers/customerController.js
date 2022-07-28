@@ -11,7 +11,6 @@ export async function addCustomer(req, res, next) {
             req.body.branchid = returnTokenData.branchid;
             req.body.created_at = returnTokenData.created_at;
 
-            console.log("data..", req.body)
             var createCustomer = new Customer(req.body)
             createCustomer.save((err, result) => {
                 if (!err) {
@@ -40,7 +39,6 @@ export async function updateCustomer(req, res, next) {
             const id = req.query.id;
             const data = req.body;
             data.updated_at = new Date();
-            console.log("data...", data)
 
             Customer.findOneAndUpdate({ "_id": id, "branchid": returnTokenData.branchid }, data, (error, doc) => {
                 if (!error) {

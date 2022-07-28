@@ -11,7 +11,6 @@ export async function addProduct(req, res, next) {
             req.body.branchid = returnTokenData.branchid;
             req.body.created_at = returnTokenData.created_at;
 
-            console.log("data..", req.body)
             var createProduct = new Product(req.body)
             createProduct.save((err, result) => {
                 if (!err) {
@@ -40,7 +39,6 @@ export async function updateProduct(req, res, next) {
             const id = req.query.id;
             const data = req.body;
             data.updated_at = new Date();
-            console.log("data...", data)
 
             Product.findOneAndUpdate({ "_id": id, "branchid": returnTokenData.branchid }, data, (error, doc) => {
                 if (!error) {
