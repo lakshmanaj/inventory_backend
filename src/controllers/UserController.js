@@ -100,6 +100,7 @@ export async function configureToken(req, res, next) {
       const token =
         req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
       tokendata(token).then(decodedToken => {
+
         decodedToken.branchid = data.branchid
         const token2 = jwt.sign(
           {
