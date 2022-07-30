@@ -9,7 +9,9 @@ export async function addProduct(req, res, next) {
 
             req.body.userid = returnTokenData.userid;
             req.body.branchid = returnTokenData.branchid;
-            req.body.created_at = returnTokenData.created_at;
+            req.body.created_at = new Date();
+
+            console.log("bodyyyyyy", req.body)
 
             var createProduct = new Product(req.body)
             createProduct.save((err, result) => {
@@ -65,13 +67,15 @@ export async function updateProduct(req, res, next) {
 
 export async function deleteProduct(req, res, next) {
     try {
+        console.log("trigger")
 
         const token =
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(returnTokenData => {
 
-            const id = req.query.id;
-            data.updated_at = new Date();
+            const id = req.params.id;
+
+            console.log("_id", id, "branchid", returnTokenData.branchid)
             Product.deleteOne({ "_id": id, branchid: returnTokenData.branchid }, (error, doc) => {
                 if (!error) {
                     res.status(201).json({
