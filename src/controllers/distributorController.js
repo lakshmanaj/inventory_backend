@@ -41,7 +41,7 @@ export async function updateDistributor(req, res, next) {
         tokendata(token).then(returnTokenData => {
 
 
-            const id = req.query.id;
+            const id = req.params.id;
             const data = req.body;
             data.updated_at = new Date();
 
@@ -75,8 +75,7 @@ export async function deleteDistributor(req, res, next) {
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(returnTokenData => {
 
-            const id = req.query.id;
-            data.updated_at = new Date();
+            const id = req.params.id;
             Distributor.deleteOne({ "_id": id, branchid: returnTokenData.branchid }, (error, doc) => {
                 if (!error) {
                     res.status(201).json({
@@ -105,7 +104,7 @@ export async function getOneDistributor(req, res, next) {
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(returnTokenData => {
 
-            const id = req.body.distributorid;
+            const id = req.params.id;
             Distributor.findOne({ "_id": id, branchid: returnTokenData.branchid }, (error, doc) => {
                 if (!error) {
                     res.status(201).json({
