@@ -18,7 +18,7 @@ const distributorSchema = new Schema({
         type: String
     },
     branchid: {
-        type: Array,
+        type: String,
     },
     userid: {
         type: String,

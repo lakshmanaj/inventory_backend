@@ -51,9 +51,9 @@ import { addGodown, getAllGodown, getOneGodown, deleteGodown, updateGodown }
 
 router.post("/godown/add", verifyToken, addGodown);
 router.get("/godown/getall", verifyToken, getAllGodown)
-router.get("/godown/getone", verifyToken, getOneGodown)
-router.delete("/godown/delete", verifyToken, deleteGodown);
-router.put("/godown/update", verifyToken, updateGodown);
+router.get("/godown/getone/:id", verifyToken, getOneGodown)
+router.delete("/godown/delete/:id", verifyToken, deleteGodown);
+router.put("/godown/update/:id", verifyToken, updateGodown);
 //end Godown controller
 
 //Product controller
@@ -74,9 +74,9 @@ import { addInbound, getAllInbound, getOneInbound, deleteInbound, updateInbound 
 
 router.post("/inbound/add", verifyToken, addInbound);
 router.get("/inbound/getall", verifyToken, getAllInbound)
-router.get("/inbound/getone", verifyToken, getOneInbound)
-router.delete("/inbound/delete", verifyToken, deleteInbound);
-router.put("/inbound/update", verifyToken, updateInbound);
+router.get("/inbound/getone/:id", verifyToken, getOneInbound)
+router.delete("/inbound/delete/:id", verifyToken, deleteInbound);
+router.put("/inbound/update/:id", verifyToken, updateInbound);
 //end Inbound controller
 
 //Outbound controller
@@ -85,9 +85,9 @@ import { addOutbound, getAllOutbound, getOneOutbound, deleteOutbound, updateOutb
 
 router.post("/outbound/add", verifyToken, addOutbound);
 router.get("/outbound/getall", verifyToken, getAllOutbound)
-router.get("/outbound/getone", verifyToken, getOneOutbound)
-router.delete("/outbound/delete", verifyToken, deleteOutbound);
-router.put("/outbound/update", verifyToken, updateOutbound);
+router.get("/outbound/getone/:id", verifyToken, getOneOutbound)
+router.delete("/outbound/delete/:id", verifyToken, deleteOutbound);
+router.put("/outbound/update/:id", verifyToken, updateOutbound);
 //end Outbound controller
 
 //Customer controller
@@ -96,9 +96,9 @@ import { addCustomer, getAllCustomer, getOneCustomer, deleteCustomer, updateCust
 
 router.post("/customer/add", verifyToken, addCustomer);
 router.get("/customer/getall", verifyToken, getAllCustomer)
-router.get("/customer/getone", verifyToken, getOneCustomer)
-router.delete("/customer/delete", verifyToken, deleteCustomer);
-router.put("/customer/update", verifyToken, updateCustomer);
+router.get("/customer/getone/:id", verifyToken, getOneCustomer)
+router.delete("/customer/delete/:id", verifyToken, deleteCustomer);
+router.put("/customer/update/:id", verifyToken, updateCustomer);
 //end Customer controller
 
 

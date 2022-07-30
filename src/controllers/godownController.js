@@ -36,7 +36,7 @@ export async function updateGodown(req, res, next) {
         tokendata(token).then(returnTokenData => {
 
 
-            const id = req.query.id;
+            const id = req.params.id;
             const data = req.body;
             data.updated_at = new Date();
 
@@ -70,8 +70,9 @@ export async function deleteGodown(req, res, next) {
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(returnTokenData => {
 
-            const id = req.query.id;
-            data.updated_at = new Date();
+            const id = req.params.id;
+
+            console.log("_id", id, "branchid", returnTokenData.branchid)
             Godown.deleteOne({ "_id": id, branchid: returnTokenData.branchid }, (error, doc) => {
                 if (!error) {
                     res.status(201).json({
