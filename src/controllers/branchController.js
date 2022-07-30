@@ -23,6 +23,7 @@ export async function addBranch(req, res, next) {
             createBranch = new Branch({
                 name: postData.name,
                 address: postData.address,
+                description: postData.description,
                 userid: returnTokenData.userid,
                 branchid: "BRANCH001"
             })
@@ -60,6 +61,7 @@ export async function addBranch(req, res, next) {
                     Branch.create({
                         name: postData.name,
                         address: postData.address,
+                        description: postData.description,
                         userid: returnTokenData.userid,
                         branchid: newBranchid
                     }, function (err, suc) {
@@ -96,6 +98,9 @@ export async function addBranch(req, res, next) {
 }
 
 
+
+
+
 export async function getOneBranch(req, res, next) {
     try {
         const data = req.body;
@@ -117,6 +122,7 @@ export async function getAllBranch(req, res, next) {
         const token =
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(ret => {
+
             User.aggregate([
                 {
                     $match: {
@@ -139,15 +145,18 @@ export async function getAllBranch(req, res, next) {
 
 
             ])
-                .then((result) => {
+                .then((data) => {
                     res.status(201).json({
                         status: "success",
-                        result
+                        data
                     });
                 })
                 .catch((error) => {
                     console.log(error);
                 });
+
+
+
 
         })
 
@@ -191,10 +200,13 @@ var callMyPromise = async () => {
 
 export async function updateBranch(req, res, next) {
     try {
-        const id = req.query.id;
+        const id = req.params.id;
         const data = req.body;
         data.updated_at = new Date();
-        Branch.findOneAndUpdate({ "_id": id }, data, (error, doc) => {
+
+        console.log("dataaaaaa", data)
+
+        Branch.findOneAndUpdate({ "branchid": id }, data, (error, doc) => {
             if (!error) {
                 res.status(201).json({
                     message: "Branch details updated"
@@ -205,6 +217,38 @@ export async function updateBranch(req, res, next) {
                 });
             }
         });
+
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+export async function deleteBranch(req, res, next) {
+    try {
+        console.log(req.params)
+        const token =
+            req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
+        tokendata(token).then(returnTokenData => {
+
+
+            const id = req.params.id;
+
+            Branch.deleteOne({ "branchid": id }, (error, doc) => {
+                if (!error) {
+                    res.status(201).json({
+                        message: "Branch details deleted"
+                    });
+                } else {
+                    res.status(422).json({
+                        message: "Failed"
+                    });
+                }
+            });
+
+        })
+
 
 
     } catch (error) {
