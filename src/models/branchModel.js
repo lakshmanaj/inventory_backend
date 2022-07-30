@@ -8,6 +8,9 @@ const branchSchema = new Schema({
     address: {
         type: String,
     },
+    description: {
+        type: String,
+    },
     branchid: {
         type: String,
     },
