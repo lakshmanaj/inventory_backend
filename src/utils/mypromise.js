@@ -2,6 +2,7 @@ import Branch from "../models/branchModel.js";
 
 export const isProcessed_Branch = (data) => (
     new Promise((resolve, reject) => {
+        console.log("is processed branch id", data.branchid)
         Branch.findOne({ "branchid": data.branchid })
             .then(function (result) {
                 return result;
