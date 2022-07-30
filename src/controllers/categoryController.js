@@ -11,15 +11,32 @@ export async function addCategory(req, res, next) {
             req.body.branchid = returnTokenData.branchid;
             req.body.created_at = new Date;
 
-            var createCategory = new Category(req.body)
-            createCategory.save((err, result) => {
-                if (!err) {
-                    res.status(201).json({
+            console.log({ "_id": returnTokenData.branchid, "name": req.body.name })
+
+            Category.findOne({ "branchid": returnTokenData.branchid, name: req.body.name }, (err, catCount) => {
+                if (catCount) {
+                    res.status(422).json({
                         status: "success",
-                        message: "Category created successfuly",
+                        message: "Category name already exist",
                     });
+                } else {
+
+                    var createCategory = new Category(req.body)
+                    createCategory.save((err, result) => {
+                        if (!err) {
+                            res.status(201).json({
+                                status: "success",
+                                message: "Category created successfuly",
+                            });
+                        }
+                    })
                 }
+
+
             })
+
+
+
         })
     } catch (error) {
         console.log(error)
@@ -31,6 +48,8 @@ export async function addCategory(req, res, next) {
 export async function updateCategory(req, res, next) {
     try {
 
+        console.log("trigger")
+
         const token =
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(returnTokenData => {
@@ -40,7 +59,7 @@ export async function updateCategory(req, res, next) {
             const data = req.body;
             data.updated_at = new Date();
 
-            Category.findOneAndUpdate({ "_id": id, "branchid": returnTokenData.branchid }, data, (error, doc) => {
+            Category.findOneAndUpdate({ "_id": req.params.id, "branchid": returnTokenData.branchid }, data, (error, doc) => {
                 if (!error) {
                     res.status(201).json({
                         message: "Category details updated"
@@ -59,12 +78,12 @@ export async function updateCategory(req, res, next) {
 
 export async function deleteCategory(req, res, next) {
     try {
+        console.log(req.params)
         const token =
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(returnTokenData => {
 
-            const id = req.query.id;
-            data.updated_at = new Date();
+            const id = req.params.id;
             Category.deleteOne({ "_id": id, branchid: returnTokenData.branchid }, (error, doc) => {
                 if (!error) {
                     res.status(201).json({
@@ -115,6 +134,7 @@ export async function getOneCategory(req, res, next) {
 
 export async function getAllCategory(req, res, next) {
     try {
+        console.log("qqqqqqqqqqqq")
         const token =
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(returnTokenData => {
