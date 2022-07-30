@@ -5,7 +5,10 @@ const productSchema = new Schema({
     branchid: {
         type: String,
     },
-    cetegoryid: {
+    categoryid: {
+        type: String,
+    },
+    distributorid: {
         type: String,
     },
     userid: {
@@ -21,9 +24,6 @@ const productSchema = new Schema({
         type: String,
     },
     barcode: {
-        type: String,
-    },
-    qty: {
         type: String,
     },
     discount: {
