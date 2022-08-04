@@ -6,13 +6,13 @@ const invoiceSchema = new Schema({
         type: String,
     },
     branchid: {
-        type: String,
+        type: String
     },
     userid: {
-        type: String,
+        type: mongoose.Schema.ObjectId, required: true
     },
     productid: {
-        type: String,
+        type: mongoose.Schema.ObjectId, required: true
     },
     price: {
         type: Number,

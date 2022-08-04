@@ -3,10 +3,10 @@ const { Schema, model } = mongoose;
 
 const outboundSchema = new Schema({
     productid: {
-        type: String,
+        type: mongoose.Schema.ObjectId, required: true
     },
     branchid: {
-        type: String,
+        type: String
     },
     date: {
         type: String,
@@ -15,10 +15,10 @@ const outboundSchema = new Schema({
         type: String,
     },
     userid: {
-        type: String,
+        type: mongoose.Schema.ObjectId, required: true
     },
     godownid: {
-        type: String,
+        type: mongoose.Schema.ObjectId, required: true
     },
     created_at: {
         type: Date, default: new Date(),

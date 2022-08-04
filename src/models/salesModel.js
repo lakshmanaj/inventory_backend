@@ -6,7 +6,7 @@ const salesSchema = new Schema({
         type: String,
     },
     branchid: {
-        type: String,
+        type: String
     },
     total_discount: {
         type: String,
@@ -15,13 +15,13 @@ const salesSchema = new Schema({
         type: String,
     },
     userid: {
-        type: String,
+        type: mongoose.Schema.ObjectId, required: true
     },
     customerid: {
-        type: String,
+        type: mongoose.Schema.ObjectId, required: true
     },
     payment_type: {
-        type: String,
+        type: mongoose.Schema.ObjectId, required: true
     },
     created_at: {
         type: Date, default: new Date(),

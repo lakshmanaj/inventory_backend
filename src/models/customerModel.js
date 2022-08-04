@@ -3,7 +3,7 @@ const { Schema, model } = mongoose;
 
 const customerSchema = new Schema({
     branchid: {
-        type: String,
+        type: String
     },
     name: {
         type: String,
@@ -15,7 +15,7 @@ const customerSchema = new Schema({
         type: String,
     },
     userid: {
-        type: String,
+        type: mongoose.Schema.ObjectId, required: true
     },
     created_at: {
         type: Date, default: new Date(),

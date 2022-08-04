@@ -1,23 +1,17 @@
 import mongoose from "mongoose";
 const { Schema, model } = mongoose;
 
-const inboundSchema = new Schema({
-    productid: {
-        type: mongoose.Schema.ObjectId, required: true
-    },
-    branchid: {
-        type: String
-    },
-    date: {
+const unitSchema = new Schema({
+    name: {
         type: String,
     },
     qty: {
-        type: String,
+        type: Number,
     },
-    userid: {
+    productid: {
         type: mongoose.Schema.ObjectId, required: true
     },
-    godownid: {
+    userid: {
         type: mongoose.Schema.ObjectId, required: true
     },
     created_at: {
@@ -26,17 +20,20 @@ const inboundSchema = new Schema({
     updated_at: {
         type: Date,
     },
+    branchid: {
+        type: String
+    },
 
 });
 
-inboundSchema.method("toJSON", function () {
+unitSchema.method("toJSON", function () {
     const { __v, _id, ...object } = this.toObject();
     object.id = _id;
     return object;
 });
 
-inboundSchema.set("autoIndex", true);
+unitSchema.set("autoIndex", true);
 
-const inbound = model("inbound", inboundSchema);
+const unit = model("unit", unitSchema);
 
-export default inbound;
+export default unit;

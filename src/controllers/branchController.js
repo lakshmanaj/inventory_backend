@@ -116,6 +116,55 @@ export async function getOneBranch(req, res, next) {
     }
 }
 
+export async function getAllBranchWithLimit(req, res, next) {
+    try {
+        const token =
+            req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
+        tokendata(token).then(ret => {
+
+            User.aggregate([
+                {
+                    $match: {
+                        email: ret.email
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "branches",
+                        localField: "branchid",
+                        foreignField: "branchid",
+                        as: "branch_info",
+                    },
+                },
+                {
+                    $unwind: "$branch_info",
+                },
+                { "$limit": 5 },
+
+
+
+            ])
+                .then((data) => {
+                    res.status(201).json({
+                        status: "success",
+                        data
+                    });
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+
+
+
+
+        })
+
+    } catch (error) {
+        console.log(error)
+        next(error);
+    }
+}
+
 
 export async function getAllBranch(req, res, next) {
     try {

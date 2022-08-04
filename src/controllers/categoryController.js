@@ -28,6 +28,11 @@ export async function addCategory(req, res, next) {
                                 status: "success",
                                 message: "Category created successfuly",
                             });
+                        } else {
+                            res.status(422).json({
+                                status: "error",
+                                message: err,
+                            });
                         }
                     })
                 }
@@ -134,24 +139,94 @@ export async function getOneCategory(req, res, next) {
 
 export async function getAllCategory(req, res, next) {
     try {
-        console.log("qqqqqqqqqqqq")
         const token =
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(returnTokenData => {
 
 
             const id = req.body.Categoryid;
-            Category.find({ branchid: returnTokenData.branchid }, (error, doc) => {
-                if (!error) {
-                    res.status(201).json({
-                        data: doc
-                    });
-                } else {
-                    res.status(422).json({
-                        message: "Failed"
-                    });
+            // Category.find({ branchid: returnTokenData.branchid }, (error, doc) => {
+            //     if (!error) {
+            //         res.status(201).json({
+            //             data: doc
+            //         });
+            //     } else {
+            //         res.status(422).json({
+            //             message: "Failed"
+            //         });
+            //     }
+            // });
+
+
+            Category.aggregate([
+                {
+                    $match: {
+                        branchid: returnTokenData.branchid
+                    }
+                },
+
+                {
+                    $lookup: {
+                        from: "users",       // other table name
+                        localField: "userid",   // name of users table field
+                        foreignField: "_id", // name of userinfo table field
+                        as: "user_info"         // alias for userinfo table
+                    }
+                },
+            ]).then((data) => {
+                res.status(201).json({
+                    status: "success",
+                    data
+                });
+            })
+                .catch((error) => {
+                    console.log(error);
+                });
+            ;
+
+        })
+
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+export async function getAllCategoryWithLimit(req, res, next) {
+    try {
+        const token =
+            req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
+        tokendata(token).then(returnTokenData => {
+
+
+            Category.aggregate([
+                {
+                    $match: {
+                        branchid: returnTokenData.branchid
+                    }
+                },
+
+                {
+                    $lookup: {
+                        from: "users",       // other table name
+                        localField: "userid",   // name of users table field
+                        foreignField: "_id", // name of userinfo table field
+                        as: "user_info"         // alias for userinfo table
+                    }
+                },
+                {
+                    "$limit": 5
                 }
-            });
+            ]).then((data) => {
+                res.status(201).json({
+                    status: "success",
+                    data
+                });
+            })
+                .catch((error) => {
+                    console.log(error);
+                });
+            ;
 
         })
 

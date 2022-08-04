@@ -76,7 +76,7 @@ export async function postLogin(req, res, next) {
           }
         );
 
-        return res.json({ token: token, message: "Loggedin successfully" });
+       return res.json({ token: token, message: "Loggedin successfully" });
       } else {
         return res.status(422).send({ message: "Invalid password" });
       }

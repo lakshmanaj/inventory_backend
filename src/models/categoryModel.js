@@ -9,7 +9,7 @@ const categorySchema = new Schema({
         type: String,
     },
     userid: {
-        type: String,
+        type: mongoose.Schema.ObjectId, required: true
     },
     created_at: {
         type: Date, default: new Date(),
@@ -18,7 +18,7 @@ const categorySchema = new Schema({
         type: Date,
     },
     branchid: {
-        type: String,
+        type: String
     },
 
 });

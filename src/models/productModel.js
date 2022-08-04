@@ -3,16 +3,16 @@ const { Schema, model } = mongoose;
 
 const productSchema = new Schema({
     branchid: {
-        type: String,
+        type: String
     },
     categoryid: {
-        type: String,
+        type: mongoose.Schema.ObjectId, required: true
     },
     distributorid: {
-        type: String,
+        type: mongoose.Schema.ObjectId, required: true
     },
     userid: {
-        type: String,
+        type: mongoose.Schema.ObjectId, required: true
     },
     name: {
         type: String,

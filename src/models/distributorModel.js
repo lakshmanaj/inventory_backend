@@ -18,10 +18,10 @@ const distributorSchema = new Schema({
         type: String
     },
     branchid: {
-        type: String,
+        type: String
     },
     userid: {
-        type: String,
+        type: mongoose.Schema.ObjectId, required: true
     },
     created_at: {
         type: Date, default: new Date(),

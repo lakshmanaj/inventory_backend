@@ -1,4 +1,7 @@
 import Product from "../models/productModel.js";
+import Category from '../models/categoryModel.js'
+import Unit from '../models/unitModel.js'
+
 import { tokendata } from '../utils/tokenKey.js'
 
 export async function addProduct(req, res, next) {
@@ -99,23 +102,64 @@ export async function deleteProduct(req, res, next) {
 
 export async function getOneProduct(req, res, next) {
     try {
-
+        console.log("trigger")
         const token =
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(returnTokenData => {
 
-            const id = req.body.productid;
-            Product.findOne({ "_id": id, branchid: returnTokenData.branchid }, (error, doc) => {
-                if (!error) {
-                    res.status(201).json({
-                        data: doc
-                    });
-                } else {
-                    res.status(422).json({
-                        message: "Failed"
-                    });
+            const id = req.params.id;
+            // Product.findOne({ "_id": id, branchid: returnTokenData.branchid }, (error, doc) => {
+            //     if (!error) {
+            //         res.status(201).json({
+            //             data: doc
+            //         });
+            //     } else {
+            //         res.status(422).json({
+            //             message: "Failed"
+            //         });
+            //     }
+            // });
+
+            Product.aggregate([
+                {
+                    $match: {
+                        "_id": id, branchid: returnTokenData.branchid
+                    }
+                },
+
+                {
+                    $lookup: {
+                        from: "userinfo",       // other table name
+                        localField: "userId",   // name of users table field
+                        foreignField: "userId", // name of userinfo table field
+                        as: "user_info"         // alias for userinfo table
+                    }
+                },
+                { $unwind: "$user_info" },     // $unwind used for getting data in object or for one record only
+
+                // Join with user_role table
+                {
+                    $lookup: {
+                        from: "userrole",
+                        localField: "userId",
+                        foreignField: "userId",
+                        as: "user_role"
+                    }
+                },
+                { $unwind: "$user_role" },
+
+
+                // define which fields are you want to fetch
+                {
+                    $project: {
+                        _id: 1,
+                        email: 1,
+                        userName: 1,
+                        userPhone: "$user_info.phone",
+                        role: "$user_role.role",
+                    }
                 }
-            });
+            ]);
 
         })
 

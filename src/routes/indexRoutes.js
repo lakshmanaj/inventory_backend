@@ -19,6 +19,7 @@ import { addBranch, deleteBranch, getAllBranch, getOneBranch, updateBranch }
 router.post("/branch/add", verifyToken, addBranch);
 router.get("/branch/getone/:id", verifyToken, getOneBranch)
 router.get("/branch/getall", verifyToken, getAllBranch)
+router.get("/branch/getall/limit", verifyToken, getAllBranch)
 router.put("/branch/update/:id", verifyToken, updateBranch);
 router.delete("/branch/delete/:id", verifyToken, deleteBranch);
 //end Branch controller
@@ -35,11 +36,12 @@ router.put("/distributor/update/:id", verifyToken, updateDistributor);
 //end Distributor controller
 
 //Category controller
-import { addCategory, getAllCategory, getOneCategory, deleteCategory, updateCategory }
+import { addCategory, getAllCategory, getOneCategory, deleteCategory, updateCategory, getAllCategoryWithLimit }
     from "../controllers/categoryController.js";
 
 router.post("/category/add", verifyToken, addCategory);
 router.get("/category/getall", verifyToken, getAllCategory)
+router.get("/category/getall/limit", verifyToken, getAllCategoryWithLimit)
 router.get("/category/getone/:id", verifyToken, getOneCategory)
 router.delete("/category/delete/:id", verifyToken, deleteCategory);
 router.put("/category/update/:id", verifyToken, updateCategory);
@@ -55,6 +57,17 @@ router.get("/godown/getone/:id", verifyToken, getOneGodown)
 router.delete("/godown/delete/:id", verifyToken, deleteGodown);
 router.put("/godown/update/:id", verifyToken, updateGodown);
 //end Godown controller
+
+//Unit controller
+import { addUnit, getAllUnit, getOneUnit, deleteUnit, updateUnit }
+    from "../controllers/unitController.js";
+
+router.post("/unit/add", verifyToken, addUnit);
+router.get("/unit/getall", verifyToken, getAllUnit)
+router.get("/unit/getone/:id", verifyToken, getOneUnit)
+router.delete("/unit/delete/:id", verifyToken, deleteUnit);
+router.put("/unit/update/:id", verifyToken, updateUnit);
+//end Unit controller
 
 //Product controller
 import { addProduct, getAllProduct, getOneProduct, deleteProduct, updateProduct }
