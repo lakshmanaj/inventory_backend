@@ -26,6 +26,12 @@ const productSchema = new Schema({
     barcode: {
         type: String,
     },
+    sprice: {
+        type: Number,
+    },
+    dprice: {
+        type: Number,
+    },
     discount: {
         type: String,
     },
