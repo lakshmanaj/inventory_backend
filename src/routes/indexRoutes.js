@@ -18,7 +18,8 @@ import { addBranch, deleteBranch, getAllBranch, getOneBranch, updateBranch }
     from "../controllers/branchController.js";
 router.post("/branch/add", verifyToken, addBranch);
 router.get("/branch/getone/:id", verifyToken, getOneBranch)
-router.get("/branch/getall", verifyToken, getAllBranch)
+router.get("/branch/getall", verifyToken, getAllBranch);
+router.post("/branch/getall/filter", verifyToken, getAllBranch)
 router.get("/branch/getall/limit", verifyToken, getAllBranch)
 router.put("/branch/update/:id", verifyToken, updateBranch);
 router.delete("/branch/delete/:id", verifyToken, deleteBranch);
@@ -82,11 +83,12 @@ router.put("/product/update/:id", verifyToken, updateProduct);
 
 
 //Inbound controller
-import { addInbound, getAllInbound, getOneInbound, deleteInbound, updateInbound }
+import { addInbound, getAllInbound, getOneInbound, deleteInbound, updateInbound, getOneInboundByProduct }
     from "../controllers/InboundController.js";
 
 router.post("/inbound/add", verifyToken, addInbound);
 router.get("/inbound/getall", verifyToken, getAllInbound)
+router.get("/inbound/getone/byproduct/:id", verifyToken, getOneInboundByProduct)
 router.get("/inbound/getone/:id", verifyToken, getOneInbound)
 router.delete("/inbound/delete/:id", verifyToken, deleteInbound);
 router.put("/inbound/update/:id", verifyToken, updateInbound);
