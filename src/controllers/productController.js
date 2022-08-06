@@ -14,14 +14,18 @@ export async function addProduct(req, res, next) {
             req.body.branchid = returnTokenData.branchid;
             req.body.created_at = new Date();
 
-            console.log("bodyyyyyy", req.body)
-
             var createProduct = new Product(req.body)
             createProduct.save((err, result) => {
                 if (!err) {
                     res.status(201).json({
                         status: "success",
                         message: "Product created successfuly",
+                    });
+                }
+                else {
+                    res.status(201).json({
+                        status: "error",
+                        message: err,
                     });
                 }
             })
@@ -177,18 +181,47 @@ export async function getAllProduct(req, res, next) {
         tokendata(token).then(returnTokenData => {
 
 
-            const id = req.body.productid;
-            Product.find({ branchid: returnTokenData.branchid }, (error, doc) => {
+            Product.aggregate([
+                {
+                    $match: {
+                        branchid: returnTokenData.branchid
+                    }
+                },
+
+                { $lookup: { localField: "categoryid", from: "categories", foreignField: "_id", as: "category_info" } },
+                { $unwind: "$category_info" },
+
+                { $lookup: { localField: "distributorid", from: "distributors", foreignField: "_id", as: "distributor_info" } },
+                { $unwind: "$distributor_info" },
+
+                { $lookup: { localField: "userid", from: "users", foreignField: "_id", as: "user_info" } },
+                { $unwind: "$user_info" },
+
+                {
+                    $project: {
+                        "_id": 1, "dprice": 1, "sprice": 1, "discount": 1, "code": 1,"barcode": 1, "description": 1, "name": 1, "branchid": 1,
+                        "distributor_info._id": 1, "distributor_info.name": 1,
+                        "category_info._id": 1, "category_info.name": 1,
+                        "user_info._id": 1, "user_info.username": 1, "user_info.usertype": 1,
+                    }
+                }
+
+
+
+
+
+
+            ]).exec((error, result) => {
                 if (!error) {
                     res.status(201).json({
-                        data: doc
+                        data: result
                     });
                 } else {
                     res.status(422).json({
                         message: "Failed"
                     });
                 }
-            });
+            })
 
         })
 
