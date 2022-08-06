@@ -11,8 +11,6 @@ export async function addUnit(req, res, next) {
             req.body.branchid = returnTokenData.branchid;
             req.body.created_at = new Date;
 
-            console.log({ "_id": returnTokenData.branchid, "name": req.body })
-
             Unit.findOne({ "branchid": returnTokenData.branchid, productid: req.body.productid, name: req.body.name }, (err, catCount) => {
                 if (catCount) {
                     console.log("exists")
@@ -31,6 +29,12 @@ export async function addUnit(req, res, next) {
                                 status: "success",
                                 message: "Unit created successfuly",
                             });
+                        } else {
+                            res.status(201).json({
+                                status: "error",
+                                message: err,
+                            });
+
                         }
                     })
                 }
@@ -51,7 +55,7 @@ export async function addUnit(req, res, next) {
 export async function updateUnit(req, res, next) {
     try {
 
-        console.log("trigger")
+        console.log("trigger update unit")
 
         const token =
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
@@ -137,35 +141,17 @@ export async function getOneUnit(req, res, next) {
 
 export async function getAllUnit(req, res, next) {
     try {
+        console.log("trigger get all unit")
         const token =
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(returnTokenData => {
-
-
-            const id = req.params.Unitid;
-            // Unit.find({ branchid: returnTokenData.branchid }, (error, doc) => {
-            //     if (!error) {
-            //         res.status(201).json({
-            //             data: doc
-            //         });
-            //     } else {
-            //         res.status(422).json({
-            //             message: "Failed"
-            //         });
-            //     }
-            // });
-
-
-
-
-
             Unit.aggregate([
-                //                 {
-                //                     $match: {
-                //                         "_id": id, branchid: returnTokenData.branchid
-                //                     }
-                //                 },
-                // 
+                {
+                    $match: {
+                        branchid: returnTokenData.branchid
+                    }
+                },
+
                 {
                     $lookup: {
                         localField: "productid",

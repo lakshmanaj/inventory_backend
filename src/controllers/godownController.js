@@ -3,20 +3,29 @@ import { tokendata } from '../utils/tokenKey.js'
 
 export async function addGodown(req, res, next) {
     try {
+        console.log("trigger add godown 1")
         const token =
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(returnTokenData => {
 
+            console.log("trigger add godown 2")
             req.body.userid = returnTokenData.userid;
             req.body.branchid = returnTokenData.branchid;
             req.body.created_at = returnTokenData.created_at;
 
+            console.log("trigger add godown 3")
             var createGodown = new Godown(req.body)
             createGodown.save((err, result) => {
+                console.log("trigger add godown 4")
                 if (!err) {
                     res.status(201).json({
                         status: "success",
                         message: "Godown created successfuly",
+                    });
+                }else{
+                    res.status(201).json({
+                        status: "error",
+                        message: err,
                     });
                 }
             })
