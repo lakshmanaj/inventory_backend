@@ -82,9 +82,6 @@ export async function addBranch(req, res, next) {
                                     }
                                 }
                             );
-
-
-
                         }
                     });
                 }
@@ -96,9 +93,6 @@ export async function addBranch(req, res, next) {
         next(error);
     }
 }
-
-
-
 
 
 export async function getOneBranch(req, res, next) {
@@ -140,9 +134,6 @@ export async function getAllBranchWithLimit(req, res, next) {
                     $unwind: "$branch_info",
                 },
                 { "$limit": 5 },
-
-
-
             ])
                 .then((data) => {
                     res.status(201).json({
@@ -153,10 +144,6 @@ export async function getAllBranchWithLimit(req, res, next) {
                 .catch((error) => {
                     console.log(error);
                 });
-
-
-
-
         })
 
     } catch (error) {
@@ -172,27 +159,34 @@ export async function getAllBranch(req, res, next) {
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(ret => {
 
-            User.aggregate([
+            var filterData = {}
+            // iterate through key-value gracefully
+            const obj = req.body;
+            for (const [key, value] of Object.entries(obj)) {
+                filterData[key] = value == 'true' ? true : value == 'false' ? false : value;
+            }
+            console.log("objjjjj", filterData)
+
+
+
+            Branch.aggregate([
+                // {
+                //     $match: {
+                //         branchid: ret.branchid
+                //     }
+                // },
+                { $lookup: { from: "users", localField: "userid", foreignField: "_id", as: "user_info" } },
+                { $unwind: "$user_info" },
+
+                { $lookup: { localField: "userid", from: "users", foreignField: "_id", as: "user_info" } },
+                { $unwind: "$user_info" },
+                { $match: filterData },
                 {
-                    $match: {
-                        email: ret.email
+                    $project: {
+                        "_id": 1, "created_at": 1, "is_validated": 1, "is_active": 1, "name": 1, "address": 1, "description": 1, "userid": 1, "branchid": 1,
+                        "user_info._id": 1, "user_info.username": 1, "user_info.usertype": 1,
                     }
                 },
-                {
-                    $lookup: {
-                        from: "branches",
-                        localField: "branchid",
-                        foreignField: "branchid",
-                        as: "branch_info",
-                    },
-                },
-                {
-                    $unwind: "$branch_info",
-                },
-
-
-
-
             ])
                 .then((data) => {
                     res.status(201).json({
@@ -203,10 +197,6 @@ export async function getAllBranch(req, res, next) {
                 .catch((error) => {
                     console.log(error);
                 });
-
-
-
-
         })
 
     } catch (error) {
