@@ -60,10 +60,11 @@ router.put("/godown/update/:id", verifyToken, updateGodown);
 //end Godown controller
 
 //Unit controller
-import { addUnit, getAllUnit, getOneUnit, deleteUnit, updateUnit }
+import { addUnit, getAllUnit, getOneUnit, deleteUnit, updateUnit, getAllUnitByProductId }
     from "../controllers/unitController.js";
 
 router.post("/unit/add", verifyToken, addUnit);
+router.get("/unit/getall/byproductid/:id", verifyToken, getAllUnitByProductId)
 router.get("/unit/getall", verifyToken, getAllUnit)
 router.get("/unit/getone/:id", verifyToken, getOneUnit)
 router.delete("/unit/delete/:id", verifyToken, deleteUnit);
