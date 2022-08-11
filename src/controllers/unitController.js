@@ -139,6 +139,50 @@ export async function getOneUnit(req, res, next) {
     }
 }
 
+export async function getAllUnitByProductId(req, res, next) {
+    try {
+        console.log("trigger get all unit")
+        const token =
+            req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
+        tokendata(token).then(returnTokenData => {
+
+            Unit.aggregate([
+                {
+                    $match: {
+                        branchid: returnTokenData.branchid
+                    }
+                },
+
+                {
+                    $lookup: {
+                        localField: "productid",
+                        from: "products",
+                        foreignField: "_id",
+                        as: "product_info"
+                    }
+                },
+                {
+                    $unwind: "$product_info"
+                },
+
+            ]).then((data) => {
+                res.status(201).json({
+                    status: "success",
+                    data
+                });
+            })
+                .catch((error) => {
+                    console.log(error);
+                });;
+
+        })
+
+
+    } catch (error) {
+        next(error);
+    }
+}
+
 export async function getAllUnit(req, res, next) {
     try {
         console.log("trigger get all unit")
