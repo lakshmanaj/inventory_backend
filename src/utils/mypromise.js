@@ -2,12 +2,14 @@ import Branch from "../models/branchModel.js";
 
 export const isProcessed_Branch = (data) => (
     new Promise((resolve, reject) => {
-        console.log("is processed branch id", data.branchid)
-        Branch.findOne({ "branchid": data.branchid })
-            .then(function (result) {
-                return result;
-            })
-            .then(function (result) {
+        console.log("is processed branch id", data)
+        Branch.findOne({ "_id": data.branchid }, (err, result) => {
+            if (err) {
+                console.log("error", err)
+                reject({ message: err });
+                return;
+            } if (result) {
+                console.log("result", result)
                 if (result.is_validated == false) {
                     reject({ message: "Branch is not validated" });
                 }
@@ -15,6 +17,10 @@ export const isProcessed_Branch = (data) => (
                     reject({ message: "Branch is not active" });
                 }
                 resolve(result);
-            });
+            }
+            if (!result) {
+                reject({ message: "Branch is not identified" });
+            }
+        })
     })
 );
