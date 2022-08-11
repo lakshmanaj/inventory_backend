@@ -165,10 +165,6 @@ export async function getAllBranch(req, res, next) {
             for (const [key, value] of Object.entries(obj)) {
                 filterData[key] = value == 'true' ? true : value == 'false' ? false : value;
             }
-            console.log("objjjjj", filterData)
-
-
-
             Branch.aggregate([
                 // {
                 //     $match: {
@@ -208,19 +204,11 @@ export async function getAllBranch(req, res, next) {
 
 var myPromise = () => (
     new Promise((resolve, reject) => {
-
-        //do something, fetch something....
-        //you guessed it, mongo queries go here.
         User.find({})
-            //I can continue to process my result inside my promise
             .then(function (result) {
-                //another query can be called based on my result...
                 return result;
             })
-            //This promise may take a while...
             .then(function (result) {
-                //post processing, non related mongo code...
-                //when you are ready, you can resolve the promise.
                 resolve(result);
             });
     })
@@ -242,9 +230,6 @@ export async function updateBranch(req, res, next) {
         const id = req.params.id;
         const data = req.body;
         data.updated_at = new Date();
-
-        console.log("dataaaaaa", data)
-
         Branch.findOneAndUpdate({ "branchid": id }, data, (error, doc) => {
             if (!error) {
                 res.status(201).json({
@@ -287,8 +272,6 @@ export async function deleteBranch(req, res, next) {
             });
 
         })
-
-
 
     } catch (error) {
         next(error);
