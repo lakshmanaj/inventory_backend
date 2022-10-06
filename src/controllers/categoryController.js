@@ -175,7 +175,16 @@ export async function getAllCategory(req, res, next) {
                 },
             ]).then((data) => {
                 res.status(201).json({
-                    status: "success",
+                    colomns: [
+                        {
+                            label: "Name",
+                            value: "name"
+                        },
+                        {
+                            label: "Description",
+                            value: "description"
+                        }
+                    ],
                     data
                 });
             })
@@ -219,8 +228,17 @@ export async function getAllCategoryWithLimit(req, res, next) {
                 }
             ]).then((data) => {
                 res.status(201).json({
-                    status: "success",
-                    data
+                    data,
+                    colomns: [
+                        {
+                            label: "Name",
+                            value: "name"
+                        },
+                        {
+                            label: "Description",
+                            value: "description"
+                        }
+                    ]
                 });
             })
                 .catch((error) => {
