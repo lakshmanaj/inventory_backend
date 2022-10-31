@@ -1,3 +1,4 @@
+import multer from "multer";
 import Product from "../models/productModel.js";
 import Category from '../models/categoryModel.js'
 import Unit from '../models/unitModel.js'
@@ -35,7 +36,6 @@ export async function addProduct(req, res, next) {
         next(error);
     }
 }
-
 
 export async function updateProduct(req, res, next) {
     try {
@@ -199,7 +199,7 @@ export async function getAllProduct(req, res, next) {
 
                 {
                     $project: {
-                        "_id": 1, "dprice": 1, "sprice": 1, "discount": 1, "code": 1,"barcode": 1, "description": 1, "name": 1, "branchid": 1,
+                        "_id": 1, "dprice": 1, "sprice": 1, "discount": 1, "code": 1, "barcode": 1, "description": 1, "name": 1, "branchid": 1,
                         "distributor_info._id": 1, "distributor_info.name": 1,
                         "category_info._id": 1, "category_info.name": 1,
                         "user_info._id": 1, "user_info.username": 1, "user_info.usertype": 1,
@@ -214,7 +214,33 @@ export async function getAllProduct(req, res, next) {
             ]).exec((error, result) => {
                 if (!error) {
                     res.status(201).json({
-                        data: result
+                        data: result,
+                        colomns: [
+                            {
+                                label: "Name",
+                                value: "name"
+                            },
+                            {
+                                label: "Description",
+                                value: "description"
+                            },
+                            {
+                                label: "Code",
+                                value: "code"
+                            },
+                            {
+                                label: "Selling Price",
+                                value: "sprice"
+                            },
+                            {
+                                label: "Dealer Price",
+                                value: "dprice"
+                            },
+                            {
+                                label: "Discount",
+                                value: "discount"
+                            }
+                        ]
                     });
                 } else {
                     res.status(422).json({
@@ -230,3 +256,119 @@ export async function getAllProduct(req, res, next) {
         next(error);
     }
 }
+
+export async function getAllProductWithLimit(req, res, next) {
+    try {
+
+        const token =
+            req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
+        tokendata(token).then(returnTokenData => {
+
+
+            Product.aggregate([
+                {
+                    $match: {
+                        branchid: returnTokenData.branchid
+                    }
+                },
+
+                { $lookup: { localField: "categoryid", from: "categories", foreignField: "_id", as: "category_info" } },
+                { $unwind: "$category_info" },
+
+                { $lookup: { localField: "distributorid", from: "distributors", foreignField: "_id", as: "distributor_info" } },
+                { $unwind: "$distributor_info" },
+
+                { $lookup: { localField: "userid", from: "users", foreignField: "_id", as: "user_info" } },
+                { $unwind: "$user_info" },
+
+                {
+                    "$limit": 5
+                },
+
+                {
+                    $project: {
+                        "_id": 1, "dprice": 1, "sprice": 1, "discount": 1, "code": 1, "barcode": 1, "description": 1, "name": 1, "branchid": 1,
+                        "distributor_info._id": 1, "distributor_info.name": 1,
+                        "category_info._id": 1, "category_info.name": 1,
+                        "user_info._id": 1, "user_info.username": 1, "user_info.usertype": 1,
+                    }
+                }
+
+
+
+
+
+
+            ]).exec((error, result) => {
+                if (!error) {
+                    res.status(201).json({
+                        data: result,
+                        colomns: [
+                            {
+                                label: "Name",
+                                value: "name"
+                            },
+                            {
+                                label: "Description",
+                                value: "description"
+                            },
+                            {
+                                label: "Code",
+                                value: "code"
+                            },
+                            {
+                                label: "Selling Price",
+                                value: "sprice"
+                            },
+                            {
+                                label: "Dealer Price",
+                                value: "dprice"
+                            },
+                            {
+                                label: "Discount",
+                                value: "discount"
+                            }
+                        ]
+                    });
+                } else {
+                    res.status(422).json({
+                        message: "Failed"
+                    });
+                }
+            })
+
+        })
+
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+var Productstorage = multer.diskStorage({ //multers disk storage settings
+    destination: function (req, file, cb) {
+        cb(null, './productimages/');
+    },
+    filename: function (req, file, cb) {
+        var datetimestamp = Date.now();
+        // cb(null, file.fieldname + '-' + datetimestamp + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1]);
+
+        cb(null, file.fieldname + '-' + Date.now().toString());
+    }
+});
+var Productupload = multer({ //multer settings
+    storage: Productstorage
+}).single('file');
+
+export async function ProductUpload(req, res, next) {
+
+    Productupload(req, res, function (err) {
+        if (err) {
+            res.json({ error_code: 1, err_desc: err });
+            return;
+        }
+
+        res.json({ error_code: 0, err_desc: null, newfilename: req.file });
+    });
+};

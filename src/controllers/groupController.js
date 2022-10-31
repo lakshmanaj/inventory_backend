@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken"
 import { tokendata } from '../utils/tokenKey.js'
 
-export async function addBranch(req, res, next) {
+export async function addGroup(req, res, next) {
     try {
 
         var returnTokenData;
@@ -13,7 +13,6 @@ export async function addBranch(req, res, next) {
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(ret => {
             returnTokenData = ret;
-
         })
         var postData = req.body;
         var newBranchid = "";
@@ -285,7 +284,3 @@ export async function deleteBranch(req, res, next) {
         next(error);
     }
 }
-
-export const getAllRecharge = getAll(User);
-export const getRecharge = getOne(User);
-export const deleteRecharge = deleteOne(User);

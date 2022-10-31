@@ -8,10 +8,24 @@ import cors from "cors";
 import globalErrHandler from "./src/controllers/errorController.js";
 //ngrok.exe http -host-header=rewrite localhost:5000
 // Routes
+import {fileURLToPath} from 'url';
+
+import path from "path";
 
 import indexRoutes from "./src/routes/indexRoutes.js";
 
+
+
+const __filename = fileURLToPath(import.meta.url);
+
+// 👇️ "/home/john/Desktop/javascript"
+const __dirname = path.dirname(__filename);
+
+
+
+
 const app = express();
+
 
 // Allow Cross-Origin requests
 app.use(cors());
@@ -28,12 +42,16 @@ const limiter = rateLimit({
 
 app.use("/api", limiter);
 
+app.use(express.static(path.join(__dirname, 'productimages')));
+
 // Body parser, reading data from body into req.body
 app.use(
   json({
     limit: "25MB",
   })
 );
+
+
 
 // Data sanitization against No sql query injection
 app.use(mongoSanitize());

@@ -33,7 +33,7 @@ const productSchema = new Schema({
         type: Number,
     },
     discount: {
-        type: String,
+        type: Number,
     },
     created_at: {
         type: Date, default: new Date(),

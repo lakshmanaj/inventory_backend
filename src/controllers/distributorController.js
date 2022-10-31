@@ -125,26 +125,170 @@ export async function getOneDistributor(req, res, next) {
     }
 }
 
+export async function getAllDistributorNameList(req, res, next) {
+    try {
+        const token =
+            req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
+        tokendata(token).then(returnTokenData => {
+            const id = req.body.Categoryid;
+            Distributor.aggregate([
+                {
+                    $match: {
+                        branchid: returnTokenData.branchid
+                    }
+                },
+
+                {
+                    $lookup: {
+                        from: "users",       // other table name
+                        localField: "userid",   // name of users table field
+                        foreignField: "_id", // name of userinfo table field
+                        as: "user_info"         // alias for userinfo table
+                    }
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        name: 1
+                    }
+                }
+            ]).then((data) => {
+                res.status(201).json({
+                    data
+                });
+            })
+                .catch((error) => {
+                    console.log(error);
+                });
+            ;
+
+        })
+
+
+    } catch (error) {
+        next(error);
+    }
+}
+
 export async function getAllDistributor(req, res, next) {
     try {
-
         const token =
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(returnTokenData => {
 
 
-            const id = req.body.distributorid;
-            Distributor.find({ branchid: returnTokenData.branchid }, (error, doc) => {
-                if (!error) {
-                    res.status(201).json({
-                        data: doc
-                    });
-                } else {
-                    res.status(422).json({
-                        message: "Failed"
-                    });
+            Distributor.aggregate([
+                {
+                    $match: {
+                        branchid: returnTokenData.branchid
+                    }
+                },
+
+                {
+                    $lookup: {
+                        from: "users",       // other table name
+                        localField: "userid",   // name of users table field
+                        foreignField: "_id", // name of userinfo table field
+                        as: "user_info"         // alias for userinfo table
+                    }
                 }
-            });
+            ]).then((data) => {
+                res.status(201).json({
+                    data,
+                    colomns: [
+                        {
+                            label: "Name",
+                            value: "name"
+                        },
+                        {
+                            label: "Address",
+                            value: "address"
+                        },
+                        {
+                            label: "Email",
+                            value: "email"
+                        },
+                        {
+                            label: "Mobile",
+                            value: "mobile"
+                        },
+                        {
+                            label: "Credit/Debit Card",
+                            value: "card"
+                        },
+                    ]
+                });
+            })
+                .catch((error) => {
+                    console.log(error);
+                });
+            ;
+
+        })
+
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+export async function getAllDistributorWithLimit(req, res, next) {
+    try {
+        const token =
+            req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
+        tokendata(token).then(returnTokenData => {
+
+
+            Distributor.aggregate([
+                {
+                    $match: {
+                        branchid: returnTokenData.branchid
+                    }
+                },
+
+                {
+                    $lookup: {
+                        from: "users",       // other table name
+                        localField: "userid",   // name of users table field
+                        foreignField: "_id", // name of userinfo table field
+                        as: "user_info"         // alias for userinfo table
+                    }
+                },
+                {
+                    "$limit": 5
+                }
+            ]).then((data) => {
+                res.status(201).json({
+                    data,
+                    colomns: [
+                        {
+                            label: "Name",
+                            value: "name"
+                        },
+                        {
+                            label: "Address",
+                            value: "address"
+                        },
+                        {
+                            label: "Email",
+                            value: "email"
+                        },
+                        {
+                            label: "Mobile",
+                            value: "mobile"
+                        },
+                        {
+                            label: "Credit/Debit Card",
+                            value: "card"
+                        },
+                    ]
+                });
+            })
+                .catch((error) => {
+                    console.log(error);
+                });
+            ;
 
         })
 

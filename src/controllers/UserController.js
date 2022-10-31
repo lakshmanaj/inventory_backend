@@ -19,7 +19,6 @@ export async function postFirstUserRegister(req, res, next) {
         email: data.email,
         phone: data.phone,
         address: data.address,
-        branchid: '',
         usertype: "SA"
       });
 
@@ -61,6 +60,7 @@ export async function postLogin(req, res, next) {
       if (user.is_blocked == true)
         return res.status(422).send({ message: "Sorry.. we are not processing your data, please contact your admin..." });
       var result = bcrypt.compareSync(req.body.password, user.password);
+
       if (result) {
         const token = jwt.sign(
           {
@@ -75,8 +75,13 @@ export async function postLogin(req, res, next) {
             expiresIn: "2h",
           }
         );
+        if (user.usertype == "SA") {
+          return res.json({ page: user.branchid.length == 0 ? '/branch/list/card' : '/branch/list/card', token: token, message: "Loggedin successfully" });
+        } else {
+          return res.json({ token: token, message: "Loggedin successfully" });
+        }
 
-       return res.json({ token: token, message: "Loggedin successfully" });
+
       } else {
         return res.status(422).send({ message: "Invalid password" });
       }

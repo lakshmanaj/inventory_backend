@@ -1,7 +1,7 @@
-import Category from "../models/categoryModel.js";
+import Brand from "../models/brandModel.js";
 import { tokendata } from '../utils/tokenKey.js'
 
-export async function addCategory(req, res, next) {
+export async function addBrand(req, res, next) {
     try {
         const token =
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
@@ -13,20 +13,20 @@ export async function addCategory(req, res, next) {
 
             console.log({ "_id": returnTokenData.branchid, "name": req.body.name })
 
-            Category.findOne({ "branchid": returnTokenData.branchid, name: req.body.name }, (err, catCount) => {
+            Brand.findOne({ "branchid": returnTokenData.branchid, name: req.body.name }, (err, catCount) => {
                 if (catCount) {
                     res.status(422).json({
                         status: "success",
-                        message: "Category name already exist",
+                        message: "Brand name already exist",
                     });
                 } else {
 
-                    var createCategory = new Category(req.body)
-                    createCategory.save((err, result) => {
+                    var createBrand = new Brand(req.body)
+                    createBrand.save((err, result) => {
                         if (!err) {
                             res.status(201).json({
                                 status: "success",
-                                message: "Category created successfuly",
+                                message: "Brand created successfuly",
                             });
                         } else {
                             res.status(422).json({
@@ -50,7 +50,7 @@ export async function addCategory(req, res, next) {
 }
 
 
-export async function updateCategory(req, res, next) {
+export async function updateBrand(req, res, next) {
     try {
 
         console.log("trigger")
@@ -64,10 +64,10 @@ export async function updateCategory(req, res, next) {
             const data = req.body;
             data.updated_at = new Date();
 
-            Category.findOneAndUpdate({ "_id": req.params.id, "branchid": returnTokenData.branchid }, data, (error, doc) => {
+            Brand.findOneAndUpdate({ "_id": req.params.id, "branchid": returnTokenData.branchid }, data, (error, doc) => {
                 if (!error) {
                     res.status(201).json({
-                        message: "Category details updated"
+                        message: "Brand details updated"
                     });
                 } else {
                     res.status(422).json({
@@ -81,7 +81,7 @@ export async function updateCategory(req, res, next) {
     }
 }
 
-export async function deleteCategory(req, res, next) {
+export async function deleteBrand(req, res, next) {
     try {
         console.log(req.params)
         const token =
@@ -89,10 +89,10 @@ export async function deleteCategory(req, res, next) {
         tokendata(token).then(returnTokenData => {
 
             const id = req.params.id;
-            Category.deleteOne({ "_id": id, branchid: returnTokenData.branchid }, (error, doc) => {
+            Brand.deleteOne({ "_id": id, branchid: returnTokenData.branchid }, (error, doc) => {
                 if (!error) {
                     res.status(201).json({
-                        message: "Category details deleted"
+                        message: "Brand details deleted"
                     });
                 } else {
                     res.status(422).json({
@@ -110,14 +110,14 @@ export async function deleteCategory(req, res, next) {
     }
 }
 
-export async function getOneCategory(req, res, next) {
+export async function getOneBrand(req, res, next) {
     try {
         const token =
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(returnTokenData => {
 
-            const id = req.body.Categoryid;
-            Category.findOne({ "_id": req.params.id, branchid: returnTokenData.branchid }, (error, doc) => {
+            const id = req.body.Brandid;
+            Brand.findOne({ "_id": req.params.id, branchid: returnTokenData.branchid }, (error, doc) => {
                 if (!error) {
                     res.status(201).json({
                         data: doc
@@ -137,28 +137,16 @@ export async function getOneCategory(req, res, next) {
     }
 }
 
-export async function getAllCategory(req, res, next) {
+export async function getAllBrand(req, res, next) {
     try {
         const token =
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(returnTokenData => {
 
 
-            const id = req.body.Categoryid;
-            // Category.find({ branchid: returnTokenData.branchid }, (error, doc) => {
-            //     if (!error) {
-            //         res.status(201).json({
-            //             data: doc
-            //         });
-            //     } else {
-            //         res.status(422).json({
-            //             message: "Failed"
-            //         });
-            //     }
-            // });
-
-
-            Category.aggregate([
+            const id = req.body.Brandid;
+          
+            Brand.aggregate([
                 {
                     $match: {
                         branchid: returnTokenData.branchid
@@ -201,13 +189,13 @@ export async function getAllCategory(req, res, next) {
     }
 }
 
-export async function getAllCategoryNameList(req, res, next) {
+export async function getAllBrandNameList(req, res, next) {
     try {
         const token =
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(returnTokenData => {
-            const id = req.body.Categoryid;
-            Category.aggregate([
+            const id = req.body.Brandid;
+            Brand.aggregate([
                 {
                     $match: {
                         branchid: returnTokenData.branchid
@@ -246,14 +234,14 @@ export async function getAllCategoryNameList(req, res, next) {
     }
 }
 
-export async function getAllCategoryWithLimit(req, res, next) {
+export async function getAllBrandWithLimit(req, res, next) {
     try {
         const token =
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(returnTokenData => {
 
 
-            Category.aggregate([
+            Brand.aggregate([
                 {
                     $match: {
                         branchid: returnTokenData.branchid

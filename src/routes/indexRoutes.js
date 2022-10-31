@@ -26,22 +26,38 @@ router.delete("/branch/delete/:id", verifyToken, deleteBranch);
 //end Branch controller
 
 //Distributor controller
-import { addDistributor, getAllDistributor, getOneDistributor, deleteDistributor, updateDistributor }
+import { addDistributor, getAllDistributor, getOneDistributor, deleteDistributor, updateDistributor, getAllDistributorWithLimit, getAllDistributorNameList }
     from "../controllers/distributorController.js";
 
 router.post("/distributor/add", verifyToken, addDistributor);
 router.get("/distributor/getall", verifyToken, getAllDistributor)
+router.get("/distributor/getall/namelist", verifyToken, getAllDistributorNameList)
+router.get("/distributor/getall/limit", verifyToken, getAllDistributorWithLimit)
 router.get("/distributor/getone/:id", verifyToken, getOneDistributor)
 router.delete("/distributor/delete/:id", verifyToken, deleteDistributor);
 router.put("/distributor/update/:id", verifyToken, updateDistributor);
 //end Distributor controller
 
+//Brand controller
+import { addBrand, getAllBrand, getOneBrand, deleteBrand, updateBrand, getAllBrandWithLimit, getAllBrandNameList }
+    from "../controllers/brandController.js";
+
+router.post("/brand/add", verifyToken, addBrand);
+router.get("/brand/getall", verifyToken, getAllBrand)
+router.get("/brand/getall/namelist", verifyToken, getAllBrandNameList)
+router.get("/brand/getall/limit", verifyToken, getAllBrandWithLimit)
+router.get("/brand/getone/:id", verifyToken, getOneBrand)
+router.delete("/brand/delete/:id", verifyToken, deleteBrand);
+router.put("/brand/update/:id", verifyToken, updateBrand);
+//end Brand controller
+
 //Category controller
-import { addCategory, getAllCategory, getOneCategory, deleteCategory, updateCategory, getAllCategoryWithLimit }
+import { addCategory, getAllCategory, getOneCategory, deleteCategory, updateCategory, getAllCategoryWithLimit, getAllCategoryNameList }
     from "../controllers/categoryController.js";
 
 router.post("/category/add", verifyToken, addCategory);
 router.get("/category/getall", verifyToken, getAllCategory)
+router.get("/category/getall/namelist", verifyToken, getAllCategoryNameList)
 router.get("/category/getall/limit", verifyToken, getAllCategoryWithLimit)
 router.get("/category/getone/:id", verifyToken, getOneCategory)
 router.delete("/category/delete/:id", verifyToken, deleteCategory);
@@ -72,10 +88,12 @@ router.put("/unit/update/:id", verifyToken, updateUnit);
 //end Unit controller
 
 //Product controller
-import { addProduct, getAllProduct, getOneProduct, deleteProduct, updateProduct }
+import { addProduct, getAllProduct, getOneProduct, deleteProduct, updateProduct, getAllProductWithLimit, ProductUpload }
     from "../controllers/productController.js";
 
 router.post("/product/add", verifyToken, addProduct);
+router.post("/product/upload", verifyToken, ProductUpload);
+router.get("/product/getall/limit", verifyToken, getAllProductWithLimit)
 router.get("/product/getall", verifyToken, getAllProduct)
 router.get("/product/getone/:id", verifyToken, getOneProduct)
 router.delete("/product/delete/:id", verifyToken, deleteProduct);
