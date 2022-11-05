@@ -5,12 +5,14 @@ const groupSchema = new Schema({
     groupid: {
         type: String,
     },
-
     branchid: {
-        type: String,
+        type: mongoose.Schema.ObjectId
+    },
+    branchcode: {
+        type: String
     },
     userid: {
-        type: mongoose.Schema.ObjectId, required: true
+        type: mongoose.Schema.ObjectId
     },
     created_at: {
         type: Date, default: new Date(),

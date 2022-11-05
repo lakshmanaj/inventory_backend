@@ -11,7 +11,7 @@ const branchSchema = new Schema({
     description: {
         type: String,
     },
-    branchid: {
+    branchcode: {
         type: String,
     },
     userid: {

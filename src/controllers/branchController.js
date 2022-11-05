@@ -1,5 +1,6 @@
 import Branch from "../models/branchModel.js";
 import User from "../models/userModel.js";
+import Group from "../models/groupModel.js";
 import { getAll, getOne, deleteOne } from "./BaseController.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken"
@@ -13,8 +14,11 @@ export async function addBranch(req, res, next) {
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(ret => {
             returnTokenData = ret;
-
+            // console.log("returnTokenData", returnTokenData)
         })
+
+
+
         var postData = req.body;
         var newBranchid = "";
         var createBranch;
@@ -25,14 +29,25 @@ export async function addBranch(req, res, next) {
                 address: postData.address,
                 description: postData.description,
                 userid: returnTokenData.userid,
-                branchid: "BRANCH001"
+                branchcode: "BRANCH001"
             })
-            createBranch.save((err, result) => {
+            createBranch.save(async (err, result) => {
                 if (!err) {
+                    console.log("result...............", result)
+
+                    const newGroup2 = new Group({
+                        groupid: returnTokenData.groupid,
+                        branchid: result._id,
+                        branchcode: result.branchcode,
+                        userid: returnTokenData.userid
+                    })
+                    var group1response = await newGroup2.save();
+
+                    console.log("group1response", group1response)
 
                     User.updateOne(
                         { "_id": returnTokenData.userid },
-                        { $push: { branchid: "BRANCH001" } },
+                        { $push: { branchcode: "BRANCH001" } },
                         function (err, result) {
                             if (err) {
                                 res.send(err);
@@ -51,7 +66,7 @@ export async function addBranch(req, res, next) {
             newBranchid = "BRANCH00" + countDoc;
             var n = 1;
             for (var i = 0; i < n; i++) {
-                var isExistBranch = await Branch.findOne({ "branchid": newBranchid }).exec();
+                var isExistBranch = await Branch.findOne({ "branchcode": newBranchid }).exec();
                 if (isExistBranch) {
                     countDoc = countDoc + 1
                     newBranchid = "BRANCH00" + countDoc;
@@ -63,14 +78,23 @@ export async function addBranch(req, res, next) {
                         address: postData.address,
                         description: postData.description,
                         userid: returnTokenData.userid,
-                        branchid: newBranchid
-                    }, function (err, suc) {
+                        branchcode: newBranchid
+                    }, async function (err, suc) {
                         if (!err) {
 
+                            console.log("success..........", suc)
+                            const newGroup2 = new Group({
+                                groupid: returnTokenData.groupid,
+                                branchid: suc._id,
+                                branchcode: suc.branchcode,
+                                userid: returnTokenData.userid
+                            })
+                            var group2response = await newGroup2.save()
+                            console.log("success group..........", group2response)
 
                             User.updateOne(
                                 { "_id": returnTokenData.userid },
-                                { $push: { branchid: [newBranchid] } },
+                                { $push: { branchcode: [newBranchid] } },
                                 function (err, result) {
                                     if (err) {
                                         res.send(err);
@@ -165,42 +189,73 @@ export async function getAllBranch(req, res, next) {
             for (const [key, value] of Object.entries(obj)) {
                 filterData[key] = value == 'true' ? true : value == 'false' ? false : value;
             }
-            console.log("return...", ret)
-            Branch.aggregate([
-                // {
-                //     $match: {
-                //         branchid: ret.branchid
-                //     }
-                // },
-
-                {
-                    "$match": {
-                        "branchid": { "$in": ret.branchid }
-                    }
-                },
+            console.log("returnData", ret)
 
 
-                { $lookup: { from: "users", localField: "userid", foreignField: "_id", as: "user_info" } },
-                { $unwind: "$user_info" },
-
-
-                // { $match: filterData },
-                {
-                    $project: {
-                        "_id": 1, "created_at": 1, "is_validated": 1, "is_active": 1, "name": 1, "address": 1, "description": 1, "userid": 1, "branchid": 1,
-                        "user_info._id": 1, "user_info.username": 1, "user_info.usertype": 1,
-                    }
-                },
-            ])
-                .then((data) => {
-                    res.status(201).json({
-                        status: "success",
-                        data
-                    });
-                })
-                .catch((error) => {
-                    console.log(error);
+            Group.find({ "groupid": ret.groupid }, function (err, record) {
+                var myBranchCode = [];
+                record.forEach(element => {
+                    myBranchCode.push(element.branchcode)
                 });
+
+                Branch.aggregate([
+                    {
+                        "$match": {
+                            "branchcode": { "$in": myBranchCode }
+                        }
+                    },
+
+
+                    { $lookup: { from: "users", localField: "userid", foreignField: "_id", as: "user_info" } },
+                    { $unwind: "$user_info" },
+                    // { $match: filterData },
+                    {
+                        $project: {
+                            "_id": 1,
+                            "created_at": 1,
+                            "is_validated": 1,
+                            "is_active": 1,
+                            "name": 1,
+                            "address": 1,
+                            "description": 1,
+                            "userid": 1,
+                            "branchid": 1,
+                            "branchcode": 1,
+                            "user_info._id": 1,
+                            "user_info.username": 1,
+                            "user_info.usertype": 1
+                        }
+                    },
+                ])
+                    .then((data) => {
+                        res.status(201).json({
+                            status: "success",
+                            data, colomns: [
+                                {
+                                    label: "Name",
+                                    value: "name"
+                                },
+                                {
+                                    label: "Address",
+                                    value: "address"
+                                },
+                                {
+                                    label: "Description",
+                                    value: "description"
+                                },
+                                {
+                                    label: "Date Of Creation",
+                                    value: "created_at"
+                                }
+                            ]
+                        });
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            })
+
+
         })
 
     } catch (error) {

@@ -10,6 +10,10 @@ const userSchema = new Schema({
         type: String,
         required: [false, "Required password"],
     },
+    groupid: {
+        type: String,
+        required: [false, "Required groupid"],
+    },
     email: {
         type: String,
         required: [false, "Required email address"],
@@ -18,9 +22,9 @@ const userSchema = new Schema({
         type: String,
         required: [false, "Required mobile number"],
     },
-    branchid: {
+    branchcode: {
         type: Array,
-        required: [false, "Required branch id"],
+        required: [false, "Required branch code"],
     },
     usertype: {
         type: String,
