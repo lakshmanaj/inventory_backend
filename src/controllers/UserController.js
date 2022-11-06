@@ -6,97 +6,6 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken"
 import { tokendata } from '../utils/tokenKey.js'
 
-
-export async function addGroupID(req, res, next) {
-  try {
-
-    var returnTokenData;
-    const token =
-      req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
-    tokendata(token).then(ret => {
-      returnTokenData = ret;
-
-    })
-    var postData = req.body;
-    var newBranchid = "";
-    var createBranch;
-    var countDoc = await Branch.countDocuments({}).exec();
-    if (countDoc == 0) {
-      createBranch = new Branch({
-        name: postData.name,
-        address: postData.address,
-        description: postData.description,
-        userid: returnTokenData.userid,
-        branchid: "BRANCH001"
-      })
-      createBranch.save((err, result) => {
-        if (!err) {
-
-          User.updateOne(
-            { "_id": returnTokenData.userid },
-            { $push: { branchid: "BRANCH001" } },
-            function (err, result) {
-              if (err) {
-                res.send(err);
-              } else {
-                res.status(201).json({
-                  status: "success",
-                  message: "Branch created successfuly",
-                });
-              }
-            }
-          );
-        }
-      })
-    }
-    if (countDoc > 0) {
-      newBranchid = "BRANCH00" + countDoc;
-      var n = 1;
-      for (var i = 0; i < n; i++) {
-        var isExistBranch = await Branch.findOne({ "branchid": newBranchid }).exec();
-        if (isExistBranch) {
-          countDoc = countDoc + 1
-          newBranchid = "BRANCH00" + countDoc;
-          n = n + 1;
-        } else {
-          n = 0;
-          Branch.create({
-            name: postData.name,
-            address: postData.address,
-            description: postData.description,
-            userid: returnTokenData.userid,
-            branchid: newBranchid
-          }, function (err, suc) {
-            if (!err) {
-
-
-              User.updateOne(
-                { "_id": returnTokenData.userid },
-                { $push: { branchid: [newBranchid] } },
-                function (err, result) {
-                  if (err) {
-                    res.send(err);
-                  } else {
-                    res.status(201).json({
-                      status: "success",
-                      message: "Branch created successfuly",
-                    });
-                  }
-                }
-              );
-            }
-          });
-        }
-
-      }
-    }
-  } catch (error) {
-    console.log(error)
-    next(error);
-  }
-}
-
-
 var Is_GroupPromise = () => (
   new Promise((resolve, reject) => {
     Group.find({})
@@ -141,7 +50,6 @@ var CreateGroupPromise = () => (
 );
 
 async function register(data, res, groupid) {
-  console.log("~~~ group id", groupid)
   const exist = await User.find({ email: data.email });
 
   if (exist.length == 0) {
@@ -172,7 +80,6 @@ export async function postFirstUserRegister(req, res, next) {
 
     var result = await (Is_GroupPromise());
 
-    console.log("result length", result.length)
     if (result.length === 0) {
       var result2 = await (CreateGroupPromise())
       register(req.body, res, result2.groupid)
@@ -263,9 +170,6 @@ export async function postLogin(req, res, next) {
           }
         ])
           .then((response) => {
-            console.log("response", response)
-
-            console.log("user............................", user)
             const token = jwt.sign(
               {
                 userid: user._id,
@@ -273,7 +177,7 @@ export async function postLogin(req, res, next) {
                 usertype: user.usertype,
                 username: user.username,
                 branchcode: user.branchcode,
-                groupid:user.groupid,
+                groupid: user.groupid,
               },
               process.env.TOKEN_KEY,
               {
@@ -293,14 +197,6 @@ export async function postLogin(req, res, next) {
               error
             });
           });
-
-
-
-
-
-
-
-
       } else {
         return res.status(422).send({ message: "Invalid password" });
       }
@@ -313,7 +209,53 @@ export async function postLogin(req, res, next) {
 }
 
 
+export async function ChangePassword(req, res, next) {
+  try {
+    const data = req.body;
 
+
+    const token =
+      req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
+    tokendata(token).then(decodedToken => {
+
+
+      User.findOne({ email: decodedToken.email }, function (err, user) {
+        if (!user) {
+          return res.status(422).send({ message: "Email does not exist" });
+        }
+        if (user.length == 0) {
+          return res.status(422).send({ message: "Email does not exist" });
+        }
+        if (user) {
+          var result = bcrypt.compareSync(data.oldpassword, user.password);
+
+          if (result) {
+            User.findOneAndUpdate({ "email": decodedToken.email }, { password: data.password }, (error, doc) => {
+              if (!error) {
+                res.status(201).json({
+                  message: "Password changed successfully"
+                });
+              } else {
+                res.status(422).json({
+                  message: "Failed"
+                });
+              }
+            });
+          } else {
+            return res.status(422).send({ message: "Old password is not matched" });
+          }
+        }
+      });
+
+
+    })
+
+
+  } catch (error) {
+    console.log(error)
+    next(error);
+  }
+}
 
 
 export async function configureToken(req, res, next) {
@@ -334,30 +276,53 @@ export async function configureToken(req, res, next) {
             username: decodedToken.username,
             branchid: data.branchid,
             branchcode: decodedToken.branchcode,
-            groupid:decodedToken.groupid
+            groupid: decodedToken.groupid
           },
           process.env.TOKEN_KEY,
           {
             expiresIn: "10h",
           }
         );
-
         return res.json({ token: token2, message: "Configured successfully" });
       });
-
-
     }).catch(err => {
       return res.status(422).send(err);
     })
-
-
   } catch (error) {
-    console.log(error)
     next(error);
   }
 }
 
+export async function getUserById(req, res, next) {
+  try {
+    console.log("req. paramssss", req.params)
+    const result = await User.findOne({ "_id": req.params.id });
+
+    if (!result) {
+      res.status(200).json({
+        status: "error",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: [
+        {
+          username: result.username,
+          email: result.email,
+          phone: result.phone,
+          address: result.address,
+          usertype: result.usertype,
+          gender: result.gender,
+          branchcode: result.branchcode,
+          groupid: result.groupid
+        }
+      ], result
+    });
+  } catch (error) {
+    next(error);
+  }
+}
 
 export const getAllRecharge = getAll(User);
-export const getRecharge = getOne(User);
 export const deleteRecharge = deleteOne(User);
