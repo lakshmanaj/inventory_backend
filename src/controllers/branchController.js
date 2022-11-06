@@ -14,7 +14,6 @@ export async function addBranch(req, res, next) {
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(ret => {
             returnTokenData = ret;
-            // console.log("returnTokenData", returnTokenData)
         })
 
 
@@ -33,8 +32,6 @@ export async function addBranch(req, res, next) {
             })
             createBranch.save(async (err, result) => {
                 if (!err) {
-                    console.log("result...............", result)
-
                     const newGroup2 = new Group({
                         groupid: returnTokenData.groupid,
                         branchid: result._id,
@@ -42,8 +39,6 @@ export async function addBranch(req, res, next) {
                         userid: returnTokenData.userid
                     })
                     var group1response = await newGroup2.save();
-
-                    console.log("group1response", group1response)
 
                     User.updateOne(
                         { "_id": returnTokenData.userid },
@@ -82,7 +77,6 @@ export async function addBranch(req, res, next) {
                     }, async function (err, suc) {
                         if (!err) {
 
-                            console.log("success..........", suc)
                             const newGroup2 = new Group({
                                 groupid: returnTokenData.groupid,
                                 branchid: suc._id,
@@ -90,7 +84,6 @@ export async function addBranch(req, res, next) {
                                 userid: returnTokenData.userid
                             })
                             var group2response = await newGroup2.save()
-                            console.log("success group..........", group2response)
 
                             User.updateOne(
                                 { "_id": returnTokenData.userid },
@@ -189,7 +182,6 @@ export async function getAllBranch(req, res, next) {
             for (const [key, value] of Object.entries(obj)) {
                 filterData[key] = value == 'true' ? true : value == 'false' ? false : value;
             }
-            console.log("returnData", ret)
 
 
             Group.find({ "groupid": ret.groupid }, function (err, record) {
@@ -314,7 +306,6 @@ export async function updateBranch(req, res, next) {
 
 export async function deleteBranch(req, res, next) {
     try {
-        console.log(req.params)
         const token =
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(returnTokenData => {

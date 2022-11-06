@@ -13,17 +13,13 @@ export async function addUnit(req, res, next) {
 
             Unit.findOne({ "branchid": returnTokenData.branchid, productid: req.body.productid, name: req.body.name }, (err, catCount) => {
                 if (catCount) {
-                    console.log("exists")
                     res.status(422).json({
                         status: "success",
                         message: "Unit name already exist",
                     });
                 } else {
-                    console.log("not exists")
                     var createUnit = new Unit(req.body)
-                    console.log("createUnit", createUnit)
                     createUnit.save((err, result) => {
-                        console.log("error", err)
                         if (!err) {
                             res.status(201).json({
                                 status: "success",
@@ -55,8 +51,6 @@ export async function addUnit(req, res, next) {
 export async function updateUnit(req, res, next) {
     try {
 
-        console.log("trigger update unit")
-
         const token =
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(returnTokenData => {
@@ -85,7 +79,6 @@ export async function updateUnit(req, res, next) {
 
 export async function deleteUnit(req, res, next) {
     try {
-        console.log(req.params)
         const token =
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(returnTokenData => {
@@ -141,7 +134,6 @@ export async function getOneUnit(req, res, next) {
 
 export async function getAllUnitByProductId(req, res, next) {
     try {
-        console.log("trigger get all unit")
         const token =
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(returnTokenData => {
@@ -185,7 +177,6 @@ export async function getAllUnitByProductId(req, res, next) {
 
 export async function getAllUnit(req, res, next) {
     try {
-        console.log("trigger get all unit")
         const token =
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(returnTokenData => {

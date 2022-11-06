@@ -164,7 +164,6 @@ export async function getAllBranch(req, res, next) {
             for (const [key, value] of Object.entries(obj)) {
                 filterData[key] = value == 'true' ? true : value == 'false' ? false : value;
             }
-            console.log("return...", ret)
             Branch.aggregate([
                 // {
                 //     $match: {
@@ -258,7 +257,6 @@ export async function updateBranch(req, res, next) {
 
 export async function deleteBranch(req, res, next) {
     try {
-        console.log(req.params)
         const token =
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(returnTokenData => {
