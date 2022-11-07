@@ -11,7 +11,6 @@ export async function addCategory(req, res, next) {
             req.body.branchid = returnTokenData.branchid;
             req.body.created_at = new Date;
 
-            console.log({ "_id": returnTokenData.branchid, "name": req.body.name })
 
             Category.findOne({ "branchid": returnTokenData.branchid, name: req.body.name }, (err, catCount) => {
                 if (catCount) {
@@ -53,7 +52,6 @@ export async function addCategory(req, res, next) {
 export async function updateCategory(req, res, next) {
     try {
 
-        console.log("trigger")
 
         const token =
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
@@ -83,7 +81,6 @@ export async function updateCategory(req, res, next) {
 
 export async function deleteCategory(req, res, next) {
     try {
-        console.log(req.params)
         const token =
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(returnTokenData => {

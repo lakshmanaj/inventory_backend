@@ -67,7 +67,6 @@ export async function updateInbound(req, res, next) {
 export async function deleteInbound(req, res, next) {
     try {
 
-        console.log("trigger delete inbound")
         const token =
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(returnTokenData => {
@@ -102,8 +101,6 @@ export async function getOneInboundByProduct(req, res, next) {
         tokendata(token).then(returnTokenData => {
 
             const productid = req.params.id;
-            console.log("productid", productid)
-
             Inbound.aggregate([
                 {
                     $match: {

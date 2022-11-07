@@ -4,12 +4,14 @@ import verifyToken from "../utils/verifyToken.js";
 const router = Router();
 
 //User controller
-import { postLogin, postFirstUserRegister, configureToken }
+import { postLogin, postFirstUserRegister, configureToken, getUserById, ChangePassword }
     from "../controllers/UserController.js";
 
 router.post("/auth/login", postLogin);
 router.post("/auth/first/register", postFirstUserRegister);
 router.post("/auth/configure/token", verifyToken, configureToken);
+router.get("/user/profile/:id", verifyToken, getUserById);
+router.post("/user/changepassword", verifyToken, ChangePassword);
 //end User controller
 
 

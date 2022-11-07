@@ -11,7 +11,6 @@ export async function addBrand(req, res, next) {
             req.body.branchid = returnTokenData.branchid;
             req.body.created_at = new Date;
 
-            console.log({ "_id": returnTokenData.branchid, "name": req.body.name })
 
             Brand.findOne({ "branchid": returnTokenData.branchid, name: req.body.name }, (err, catCount) => {
                 if (catCount) {
@@ -83,7 +82,6 @@ export async function updateBrand(req, res, next) {
 
 export async function deleteBrand(req, res, next) {
     try {
-        console.log(req.params)
         const token =
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(returnTokenData => {

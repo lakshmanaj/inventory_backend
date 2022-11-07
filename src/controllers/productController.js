@@ -74,15 +74,12 @@ export async function updateProduct(req, res, next) {
 
 export async function deleteProduct(req, res, next) {
     try {
-        console.log("trigger")
-
         const token =
             req.body.token || req.query.token || req.headers["x-access-token"] || req.headers["authorization"];
         tokendata(token).then(returnTokenData => {
 
             const id = req.params.id;
 
-            console.log("_id", id, "branchid", returnTokenData.branchid)
             Product.deleteOne({ "_id": id, branchid: returnTokenData.branchid }, (error, doc) => {
                 if (!error) {
                     res.status(201).json({
